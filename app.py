@@ -439,8 +439,10 @@ if servico_sel == "Leitura de PDF":
             detran_RS_placas(uploaded_file)
     elif tipo_pdf_sel == "DETRAN - SC":
         opcoes_dnit = ["Placas"]
-        if st.sidebar.button('Processar PDF',type="primary"):
-            detran_SC_placas(uploaded_file)
+        if uploaded_file != None:
+            if st.sidebar.button('Processar PDF',type="primary"):
+                detran_SC_placas(uploaded_file)
+        else: ""
 
 
 
