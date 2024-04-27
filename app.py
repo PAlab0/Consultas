@@ -8,7 +8,7 @@ from io import BytesIO
 
 st.set_page_config(
     page_title="Consultas - DETRAN",
-    page_icon="📝",
+    page_icon="https://github.com/PAlab0/PAlab0/blob/main/logoPA.png?raw=true",
     layout="wide",
     initial_sidebar_state="expanded",
 )
