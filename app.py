@@ -374,7 +374,7 @@ if servico_sel == "Leitura de PDF":
     elif tipo_pdf_sel == "DETRAN - SC":
         opcoes_dSC= ["Placas"]
         st.subheader("DETRAN - SC")
-        with open("https://drive.google.com/file/d/1-Hjh0PStNNDw1_vsYmxa7sOqOhXazt5F/view","rb") as file:
+        with open("https://raw.githubusercontent.com/PAlab0/Consultas/main/Documentos/SC%20-%20Placas.pdf","rb") as file:
             dow_pdf(file)
 
         with st.expander("Filtro dos Codigos de Infração"):
