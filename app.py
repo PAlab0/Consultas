@@ -7,8 +7,8 @@ import requests
 from io import BytesIO
 
 st.set_page_config(
-    page_title="Consultas - DETRAN",
-    page_icon="https://github.com/PAlab0/PAlab0/blob/main/logoPA.png?raw=true",
+    page_title="PA - Consultas",
+    page_icon="https://raw.githubusercontent.com/PAlab0/Consultas/main/Documentos/logo_v.png",
     layout="wide",
     initial_sidebar_state="expanded",
 )
