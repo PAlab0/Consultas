@@ -375,8 +375,8 @@ if servico_sel == "Leitura de PDF":
     elif tipo_pdf_sel == "DETRAN - SC":
         opcoes_dSC= ["Placas"]
         st.subheader("DETRAN - SC")
-        with open("https://github.com/PAlab0/Consultas/raw//main/Documentos/SC - Placas.pdf", "rb") as file:
-            dow_pdf(file)
+        # with open("https://github.com/PAlab0/Consultas/raw//main/Documentos/SC - Placas.pdf", "rb") as file:
+           # dow_pdf(file)
 
         with st.expander("Filtro dos Codigos de Infração"):
             st.button("""5169-1, 5169-2, 7579-0, 5215-1, 5215-2, 5240-0, 5258-1, 5258-2, 5258-3, 5266-1, 5266-2 , 5266-3, 5274-1, 5274-2, 5282-0, 5290-0, 5304-0, 5312-0, 5320-0, 5797-0, 6076-0, 7617-1, 7617-2, 7617-3, 7609-0
