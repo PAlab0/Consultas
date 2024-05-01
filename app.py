@@ -89,7 +89,6 @@ def dow_pdf(file):
                     mime="image/pdf"
                 )
     
-    
 # DNIT
 def dnit_rs(uploaded_file):
     # Expressão regular otimizada para identificar as linhas da tabela
@@ -344,7 +343,6 @@ tipos_pdf = ["DETRAN - ES","DETRAN - MS", "DETRAN - RS","DETRAN - SC","DNIT - RS
 
 
 
-
 # Obtendo a entrada do usuário para selecionar o serviço
 servico_sel = st.sidebar.selectbox("Serviço", servicos)
 
@@ -356,24 +354,21 @@ if servico_sel == "Leitura de PDF":
         opcoes_dES= ["Processos"]
         opcao_dES_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - ES", opcoes_dES)
 
-
     elif tipo_pdf_sel == "DETRAN - MS":
         opcoes_dMS= ["Placas","Processos","Defesa (sem 218)","Recurso (sem 246)"]
         opcao_dMS_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - MS", opcoes_dMS)
-
 
     elif tipo_pdf_sel == "DETRAN - RS":
         opcoes_dRS= ["Placas"]
 
         st.subheader("DETRAN - RS")
-        with open("Documentos\DETRAN RS (Correto).pdf","rb") as file:
-            dow_pdf(file)
+        # with open("Documentos\DETRAN RS (Correto).pdf","rb") as file:
+            # dow_pdf(file)
 
         with st.expander("Filtro dos Codigos de Infração"):
             st.button("""51691, 51692, 75790, 52151, 52152, 52400, 52581, 52582, 52583, 52661, 52662 , 52663, 52741, 52742, 52820, 52900, 53040, 53120, 53200, 57970, 60760, 74710, 70301, 70303,70481, 70483, 70561, 70562, 70721, 70722, 76171, 76172, 76173, 76090
                     """, type="primary")
         opcao_dRS_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - RS", opcoes_dRS)
-
 
     elif tipo_pdf_sel == "DETRAN - SC":
         opcoes_dSC= ["Placas"]
@@ -382,8 +377,14 @@ if servico_sel == "Leitura de PDF":
            # dow_pdf(file)
 
         with st.expander("Filtro dos Codigos de Infração"):
-            st.button("""5169-1, 5169-2, 7579-0, 5215-1, 5215-2, 5240-0, 5258-1, 5258-2, 5258-3, 5266-1, 5266-2 , 5266-3, 5274-1, 5274-2, 5282-0, 5290-0, 5304-0, 5312-0, 5320-0, 5797-0, 6076-0, 7617-1, 7617-2, 7617-3, 7609-0
-                    """, type="primary")
+            codes = [
+            "5169-1", "5169-2", "7579-0", "5215-1", "5215-2", "5240-0", "5258-1",
+            "5258-2", "5258-3", "5266-1", "5266-2", "5266-3", "5274-1", "5274-2",
+            "5282-0", "5290-0", "5304-0", "5312-0", "5320-0", "5797-0", "6076-0",
+            "7617-1", "7617-2", "7617-3", "7609-0"
+            ]
+            # Display the JSON string using st.code
+            st.code(codes, language='json')
         opcao_dSC_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - SC", opcoes_dSC)
 
 
