@@ -67,7 +67,7 @@ def download(df):
     st.success('Processamento concluído!', icon="✅")
 
     # Exibe o DataFrame
-    st.dataframe(df, hide_index=True, use_container_width=st.session_state.get("use_container_width", True))
+    st.dataframe(df, use_container_width=st.session_state.get("use_container_width", True))
 
     # Exibe um botão para baixar o arquivo Excel
     if st.download_button(
