@@ -385,8 +385,8 @@ if servico_sel == "Leitura de PDF":
     elif tipo_pdf_sel == "DNIT - RS":
         opcoes_dnit = ["DNIT - RS"]
         st.subheader("Modelo de PDF DNIT - RS")
-        with open("Documentos\DNIT - RS (Correto).pdf", "rb") as file:
-            dow_pdf(file)
+        # with open("Documentos\DNIT - RS (Correto).pdf", "rb") as file:
+            #dow_pdf(file)
         with st.expander("Filtros do Modelo"):
             col1, col2, col3 = st.columns(3)
             with col1:
