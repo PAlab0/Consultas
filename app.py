@@ -66,6 +66,9 @@ def download(df):
     # Exibe uma mensagem de sucesso
     st.success('Processamento concluído!', icon="✅")
 
+    # Resetar index
+    df = df.reset_index()
+    
     # Exibe o DataFrame
     st.dataframe(df, use_container_width=st.session_state.get("use_container_width", True))
 
