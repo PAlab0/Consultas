@@ -67,7 +67,7 @@ def download(df):
     st.success('Processamento concluído!', icon="✅")
 
     # Resetar index
-    df = df.reset_index(drop=True)
+    df = df.reset_index()
     
     # Exibe o DataFrame
     st.dataframe(df, use_container_width=st.session_state.get("use_container_width", True))
@@ -277,6 +277,10 @@ def PRF_RS_autuacao(uploaded_file):
 
     download(df)
 
+# PRF - RS
+def PRF_RS_penalidade(uploaded_file):
+    print("fazer")
+
 # PRF - Outros estados    
 def PRF_outros_recusa(uploaded_file):
     # Expressão regular otimizada para identificar as linhas da tabela
@@ -336,113 +340,67 @@ def PRF_outros_completo(uploaded_file):
 
     download(df)
 
+# Nomes Faltantes
+def nomes_faltantes(uploaded_file):
+    print("fazer")
+
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
-tipos_pdf = ["DETRAN - ES","DETRAN - MS", "DETRAN - RS","DETRAN - SC","DNIT - RS","PRF - Outros Estados", "PRF - RS","Nomes Faltantes"] # Lista de tipos de PDF
-
-
-
 
 # Obtendo a entrada do usuário para selecionar o serviço
 servico_sel = st.sidebar.selectbox("Serviço", servicos)
 
 if servico_sel == "Leitura de PDF":
-    # Obtendo o tipo de PDF para leitura
-    tipo_pdf_sel = st.sidebar.selectbox("Tipo de PDF", tipos_pdf)
+    # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
+    opcoes_processamento = {
+        "DETRAN - ES": {
+            "Processos": detran_ES_processos
+        },
+        "DETRAN - MS": {
+            "Placas": detran_MS_placas,
+            "Processos": detran_MS_processos,
+            "Defesa (sem 218)": detran_MS_defesa,
+            "Recurso (sem 246)": detran_MS_recurso
+        },
+        "DETRAN - RS": {
+            "Placas": detran_RS_placas
+        },
+        "DETRAN - SC": {
+            "Placas": detran_SC_placas
+        },
+        "DNIT - RS": {
+            "Modelo de PDF DNIT - RS": dnit_rs
+        },
+        "PRF - Outros estados": {
+            "Autuação - Bafômetro": PRF_outros_bafometro,
+            "Autuação - Completo": PRF_outros_completo,
+            "Autuação - Recusa": PRF_outros_recusa
+        },
+        "PRF - RS": {
+            "Penalidade": PRF_RS_penalidade,
+            "Autuação": PRF_RS_autuacao
+        },
+        "Nomes Faltantes": {
+            "Nomes Faltantes": nomes_faltantes
+        }
+    }
 
-    if tipo_pdf_sel == "DETRAN - ES":
-        opcoes_dES= ["Processos"]
-        opcao_dES_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - ES", opcoes_dES)
-
-    elif tipo_pdf_sel == "DETRAN - MS":
-        opcoes_dMS= ["Placas","Processos","Defesa (sem 218)","Recurso (sem 246)"]
-        opcao_dMS_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - MS", opcoes_dMS)
-
-    elif tipo_pdf_sel == "DETRAN - RS":
-        opcoes_dRS= ["Placas"]
-
-        st.subheader("DETRAN - RS")
-        # with open("Documentos\DETRAN RS (Correto).pdf","rb") as file:
-            # dow_pdf(file)
-
-        with st.expander("Filtro dos Codigos de Infração"):
-            st.button("""51691, 51692, 75790, 52151, 52152, 52400, 52581, 52582, 52583, 52661, 52662 , 52663, 52741, 52742, 52820, 52900, 53040, 53120, 53200, 57970, 60760, 74710, 70301, 70303,70481, 70483, 70561, 70562, 70721, 70722, 76171, 76172, 76173, 76090
-                    """, type="secondary")
-        opcao_dRS_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - RS", opcoes_dRS)
-
-    elif tipo_pdf_sel == "DETRAN - SC":
-        opcoes_dSC= ["Placas"]
-        st.subheader("DETRAN - SC")
-        # with open("https://github.com/PAlab0/Consultas/raw//main/Documentos/SC - Placas.pdf", "rb") as file:
-           # dow_pdf(file)
-
-        with st.expander("Filtro dos Codigos de Infração"):
-            st.button("""5169-1, 5169-2, 7579-0, 5215-1, 5215-2, 5240-0, 5258-1, 5258-2, 5258-3, 5266-1, 5266-2, 5266-3, 5274-1, 5274-2, 5282-0, 5290-0, 5304-0, 5312-0, 5320-0, 5797-0, 6076-0, 7617-1, 7617-2, 7617-3, 7609-0
-            """, type="secondary")   
-        opcao_dSC_sel = st.sidebar.selectbox("Selecione uma opção DETRAN - SC", opcoes_dSC)
-
-
-    elif tipo_pdf_sel == "DNIT - RS":
-        opcoes_dnit = ["DNIT - RS"]
-        st.subheader("Modelo de PDF DNIT - RS")
-        # with open("Documentos\DNIT - RS (Correto).pdf", "rb") as file:
-            #dow_pdf(file)
-        with st.expander("Filtros do Modelo"):
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.button("Codigo da Infração - 747-1", type="primary")
-            with col2:
-                st.button("Placas - /RS", type="primary")
-            with col3:
-                st.button("Desdobramento - 0", type="primary")
-        
-        opcao_dnit_sel = st.sidebar.selectbox("Selecione uma opção DNIT - RS", opcoes_dnit)
-
-
-    elif tipo_pdf_sel == "PRF - Outros estados":
-        opcoes_prf = ["Autuação - Bafômetro", "Autuação - Completo", "Autuação - Recusa"]
-        opcao_prf_sel = st.sidebar.selectbox("Selecione uma opção PRF", opcoes_prf)
-
-
-
-    elif tipo_pdf_sel == "PRF - RS":
-        opcoes_prf = ["Penalidade", "Autuação"]
-        opcao_prf_sel = st.sidebar.selectbox("Selecione uma opção PRF", opcoes_prf)
-
-
-    elif tipo_pdf_sel == "Nomes Faltantes":
-        opcoes_nomes = ["Nomes Faltantes"]
-        opcao_nomes_sel = st.sidebar.selectbox("Selecione uma opção Nomes Faltantes", opcoes_nomes)
-
-
-
-
-
-
-
-    # Lógica para selecionar o arquivo para leitura de PDF - - SÓ APARECER BOTAO APÓS COLOCAR PDF
+    # Selecionar tipo de PDF e opção de processamento
+    opcoes_tipo_pdf = list(opcoes_processamento.keys())
+    tipo_pdf_sel = st.sidebar.selectbox("Tipo de PDF", opcoes_tipo_pdf)
+    
+    opcoes_processamento_selecionado = opcoes_processamento[tipo_pdf_sel]
+    opcoes_processamento_selecionado_nomes = list(opcoes_processamento_selecionado.keys())
+    opcao_processamento_sel = st.sidebar.selectbox(f"Selecione uma opção {tipo_pdf_sel}", opcoes_processamento_selecionado_nomes)
+    
+    # Lógica para selecionar o arquivo para processamento de PDF 
     st.sidebar.title("Upload de arquivo 🗂️")
     uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
-    if tipo_pdf_sel == "DNIT - RS":
-        opcoes_dnit = ["DNIT - RS"]
-        if st.sidebar.button('Processar PDF',type="primary"):
-            dnit_rs(uploaded_file)
-    elif tipo_pdf_sel == "DETRAN - MS":
-        opcoes_dnit = ["Processos"]
-        if st.sidebar.button('Processar PDF',type="primary"):
-            detran_MS_processos(uploaded_file)
-    elif tipo_pdf_sel == "DETRAN - RS":
-        opcoes_dnit = ["Processos"]
-        if st.sidebar.button('Processar PDF',type="primary"):
-            detran_RS_placas(uploaded_file)
-    elif tipo_pdf_sel == "DETRAN - SC":
-        opcoes_dnit = ["Placas"]
-        if uploaded_file != None:
-            if st.sidebar.button('Processar PDF',type="primary"):
-                detran_SC_placas(uploaded_file)
-        else: ""
 
-
+    if uploaded_file != None:
+        if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
+            if st.sidebar.button('Processar PDF', type="primary"):
+                opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
 
 
@@ -463,19 +421,3 @@ elif servico_sel == "Consulta de placas - GOV":
         uploaded_files = st.sidebar.file_uploader("Escolha o seu arquivo Excel", accept_multiple_files=True, type=('xlsx', 'xls'), help=("Coloque um arquivo .xlsx ou .xls"))
 else:
     uploaded_files = None
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
