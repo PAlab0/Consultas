@@ -1,9 +1,23 @@
 import streamlit as st
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 import re
-import datetime
-import pdfplumber
 import pandas as pd
+import pdfplumber
 import requests
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import pandas as pd
+import time
+
+options = webdriver.ChromeOptions()
+options.add_argument('--no-sandbox')
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--diable-dve-shm-uage')
+options.binary_location = '/usr/lib/chromium-browser/chromedriver'
+driver = webdriver.Chrome(options=options)
 
 st.set_page_config(
     page_title="PA - Consultas",
@@ -159,7 +173,53 @@ def detran_MS_placas(uploaded_file):
     download(df)
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
-    print("Selenium")
+    def extrair_nome(texto):
+        palavras = texto.split()
+        if "Sr.(a)" in palavras:
+            indice_sr = palavras.index("Sr.(a)")
+            if "CPF:" in palavras:
+                indice_cpf = palavras.index("CPF:")
+                nome = " ".join(palavras[indice_sr + 1 : indice_cpf])
+                return nome
+        return
+    todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
+    padrao_linha_tabela = r"\d{4}-[A-Z0-9]{5}"
+    df = pd.DataFrame(todas_tabelas, columns=["Proc Adm"])
+    df2 = df.copy()
+    # Loop através das linhas do DataFrame
+    for indice, linha in df2.iterrows():
+        # Abra o site
+        driver.get('https://processoeletronico.es.gov.br')
+
+        # Insira a consulta ou os dados relevantes (substitua os campos e seletores HTML apropriados)
+        campo_pesquisa = driver.find_element(By.XPATH, '//*[@id="protocolo"]')
+        time.sleep(0)
+
+        campo_pesquisa.send_keys(str(linha['Proc Adm']))  # Certifique-se de converter para string
+        time.sleep(0)
+
+        # Envie a consulta (se houver um botão de pesquisa)
+        botao_pesquisar = driver.find_element(By.XPATH,'//*[@id="btn-submit"]')
+        time.sleep(0)
+        botao_pesquisar.click()
+        time.sleep(2.2)
+
+        # Capture o valor que você deseja extrair (substitua o seletor HTML apropriado)
+        valor = driver.find_element(By.XPATH, "//*[@id='summary']").text
+        time.sleep(0)
+
+        # Armazene o valor capturado na lista
+        valores_capturados.append(valor)
+        print(f"Processando linha  {indice + 1} - {str(linha['Proc Adm'])}")
+
+    # Feche o navegador
+    driver.quit()
+    # Adicione os valores capturados ao DataFrame
+    df2['Valor Capturado'] = valores_capturados
+    df2['Nome Completo'] = df2['Valor Capturado'].apply(extrair_nome)
+    df2['Nome Completo'] = df2['Nome Completo'].str.replace(',', '')
+    df2 = df2.drop('Valor Capturado', axis=1)
+    download(df2)
 # DETRAN - RS
 def detran_RS_placas(uploaded_file):
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s(\d{2}/\d{2}/\d{4})\s(\d+)\s([A-Z]{1,2}\d+)\s(\d+)"
