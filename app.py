@@ -11,12 +11,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
 st.sidebar.markdown(
     "<div align='center'><img src='https://github.com/PAlab0/PAlab0/blob/main/logoPA.png?raw=true' width='85'></div>",
     unsafe_allow_html=True,
-)
-
+) 
 st.sidebar.markdown(""" """)
 st.sidebar.title("""Consultas DETRAN 📝""")
 
@@ -58,20 +56,15 @@ def loop (uploaded_file,padrao):
 def download(df):
     # Salva o DataFrame como um arquivo Excel
     df.to_excel('{tipo_pdf_sel}.xlsx', index=False)
-
     # Lê o conteúdo do arquivo Excel como bytes
     with open('{tipo_pdf_sel}.xlsx', 'rb') as f:
         excel_bytes = f.read()
-
     # Exibe uma mensagem de sucesso
     st.success('Processamento concluído!', icon="✅")
-
     # Resetar index
     df = df.reset_index()
-    
     # Exibe o DataFrame
     st.dataframe(df, use_container_width=st.session_state.get("use_container_width", True))
-
     # Exibe um botão para baixar o arquivo Excel
     if st.download_button(
         label="Clique aqui para baixar o arquivo em Excel",
@@ -91,7 +84,7 @@ def dow_pdf(file):
     
 # DNIT
 def dnit_rs(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
+    
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2}\s/\s[A-Z]{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{3}-\d)\s/\s(\d)"
     
     # Chamando a função loop para processar o PDF e criar o DataFrame
@@ -112,178 +105,102 @@ def dnit_rs(uploaded_file):
     df["Placa/UF"] = df["Placa/UF"].str.split("/", n=1).str[0]
 
     download(df)
-
 # DETRAN - MS
 def detran_MS_processos(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
     padrao_linha_tabela = r"Condutor:\s+(.*?)\n"
-
-    # Chamando a função loop para processar o PDF e criar o DataFrame
     todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
-
-    # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df = pd.DataFrame(todas_tabelas, columns=["Condutor"])
-
     download(df)
 def detran_MS_defesa(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
     padrao_linha_tabela = r"Condutor:\s+(.*?)\n"
-
-    # Chamando a função loop para processar o PDF e criar o DataFrame
     todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
     todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
-
-    # Expressão regular otimizada para identificar as linhas da tabela
     padrao1_linha_tabela = r"Condutor:\s+(.*?)\n"
     padrao2_linha_tabela = r"Previsão Legal \(CTB\): (.+?)\n"
-
-    # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df1 = pd.DataFrame(todas_tabelas1, columns=["Condutor"])
     df2 = pd.DataFrame(todas_tabelas2, columns=["Previsão Legal"])
     df = pd.concat([df1, df2], axis=1)
-
-    #Filtrar os nomes que não tenham como previsão legal o código 218 III
     df = df[df["Previsão Legal"] != "218 III"]
-
-    # Remover as colunas indesejadas do DataFrame
     df.drop(columns=["Previsão Legal"], inplace=True)
-
     download(df)
 def detran_MS_recurso(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
     padrao_linha_tabela = r"Condutor:\s+(.*?)\n"
-
-    # Chamando a função loop para processar o PDF e criar o DataFrame
     todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
     todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
-    todas_tabelas3 = loop(uploaded_file, padrao3_linha_tabela)
-
-    # Expressão regular otimizada para identificar as linhas da tabela
+    todas_tabelas3 = loop(uploaded_file, padrao3_linha_tabela)    
     padrao1_linha_tabela = r"Condutor:\s+(.*?)\n"
     padrao2_linha_tabela = r"Fundamento legal (.+?) Processo"
     padrao3_linha_tabela = r"Prazo:\s+(.*?)\n"
-
-    #  Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df1 = pd.DataFrame(todas_tabelas1, columns=["Condutor"])
     df2 = pd.DataFrame(todas_tabelas2, columns=["Previsão Legal"])
     df3 = pd.DataFrame(todas_tabelas3, columns=["Prazo"])
-
     df4 = pd.concat([df1, df2], axis=1)
     df = pd.concat([df4, df3], axis=1)
-
-    #Filtrar os nomes que não tenham como previsão legal o código 218 III
     df = df[df["Previsão Legal"] != "218 III"]
     df = df[df["Previsão Legal"] != "02 MESES"]
     df = df[df["Previsão Legal"] != "04 MESES"]
     df = df[df["Previsão Legal"] != "06 MESES"]
-
-    # Remover as colunas indesejadas do DataFrame
     df.drop(columns=["Previsão Legal"], inplace=True)
     df.drop(columns=["Prazo"], inplace=True)
-
     download(df)
 def detran_MS_placas(uploaded_file):
-   # Chamando a função loop para processar o PDF e criar o DataFrame
     todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
     todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
-
-    # Expressão regular otimizada para identificar as linhas da tabela
     padrao1_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z0-9]+)\s(\d+)"
     padrao2_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z0-9]+)\s(\d+)\s(\d{2}/\d{2}/\d{4})\s(\d{2}/\d{2}/\d{4})\s([\d,]+(?:\.\d{3})*,\d+)"
-
-    # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df = pd.DataFrame(todas_tabelas1, columns=["Placa", "Número Auto", "Código da Infração"])
     df2 = pd.DataFrame(todas_tabelas2, columns=["Placa", "Número Auto", "Código da Infração","Data de Infração", "Data Limite", "Valor"])
-
-    # Remover colunas
     df2 = df2["Placa"]
-
-    # Filtrar os códigos
     df3 = df[~df['Placa'].isin(df2)]
     codigos_infracoes_filtrados = ['51691', '51692', '75790', '52151', '52152', '52400', '52581', '52582', '52583', '52661', '52662' , '52663', '52741', '52742', '52820', '52900', '53040', '53120', '53200', '57970', '60760', '76171', '76172', '76173', '76090']
     df3 = df3[df3['Código da Infração'].isin(codigos_infracoes_filtrados)]
-
-    # Remover as colunas indesejadas do DataFrame e duplicadas
     df3.drop(columns=["Número Auto", "Código da Infração"], inplace=True)
     df3 = df3.drop_duplicates(subset=['Placa'])
     download(df)
-
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
     print("Selenium")
-
 # DETRAN - RS
 def detran_RS_placas(uploaded_file):
-     # Expressão regular otimizada para identificar as linhas da tabela
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s(\d{2}/\d{2}/\d{4})\s(\d+)\s([A-Z]{1,2}\d+)\s(\d+)"
-                        
-    # Inicialize uma lista vazia para armazenar todas as tabelas encontradas
     todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
-
-    # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df = pd.DataFrame(todas_tabelas, columns=["Placa", "Data da Infração", "Órgão Autuador","Série", "Cód. Infração"])
-
-    # Filtrar os dados com base nos códigos de infração específicos
     codigos_infracoes_filtrados = ['51691', '51692', '75790', '52151', '52152', '52400', '52581', '52582', '52583', '52661', '52662' , '52663', '52741', '52742', '52820', '52900', '53040', '53120', '53200', '57970', '60760', '74710', '70301', '70303','70481', '70483', '70561', '70562', '70721', '70722', '76171', '76172', '76173', '76090']
     df = df[df['Cód. Infração'].isin(codigos_infracoes_filtrados)]
-
-    # Remover as colunas indesejadas do DataFrame
     df.drop(columns=["Data da Infração", "Órgão Autuador","Série", "Cód. Infração"], inplace=True)
-
-    # Retirar placas repetidas
     df = df.drop_duplicates(subset='Placa').dropna(subset=['Placa'])
-
     download(df)
-
 # DETRAN - SC
 def detran_SC_placas(uploaded_file):
-     # Expressão regular otimizada para identificar as linhas da tabela
-    padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z0-9]+)\s(\d{2}/\d{2}/\d{4})\s(\d{4}-\d)\s(\d{2}/\d{2}/\d{4})"
-                        
-    # Inicialize uma lista vazia para armazenar todas as tabelas encontradas
+    padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z0-9]+)\s(\d{2}/\d{2}/\d{4})\s(\d{4}-\d)\s(\d{2}/\d{2}/\d{4})"                    
     todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
-
-    # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df = pd.DataFrame(todas_tabelas, columns=["Placa", "Número Auto", "Data Infração", "Código da Infração", "Data Limite"])
-
-    # Filtrar os códigos
     codigos_infracoes_filtrados = ['5169-1', '5169-2', '7579-0', '5215-1', '5215-2', '5240-0', '5258-1', '5258-2', '5258-3', '5266-1', '5266-2' , '5266-3', '5274-1', '5274-2', '5282-0', '5290-0', '5304-0', '5312-0', '5320-0', '5797-0', '6076-0', '7617-1', '7617-2', '7617-3', '7609-0']
     df = df[df['Código da Infração'].isin(codigos_infracoes_filtrados)]
-
-    # Remover as colunas indesejadas do DataFrame
     df.drop(columns=["Número Auto", "Data Infração","Código da Infração", "Data Limite"], inplace=True)
-
-
     download(df)
-
 # PRF - RS
 def PRF_RS_autuacao(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{4}/\d)\s(\d{2}/\d{2}/\d{4})"
-
-    # Inicialize uma lista vazia para armazenar todas as tabelas encontradas
     todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
-
-    # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df = pd.DataFrame(todas_tabelas, columns=["Placa", "Nº do Auto de Infração", "Data da Infração", "Código da Infração/Desdobramento", "Data de Vencimento da Notificação"])
-
-    # Filtrar os dados com base nos códigos de infração específicos
     codigos_infracoes_filtrados = ['5169/1', '5169/2', '7579/0', '5215/1', '5215/2', '5240/0', '5258/1', '5258/2', '5258/3', '5266/1', '5266/2' , '5266/3', '5274/1', '5274/2', '5282/0', '5290/0', '5304/0', '5312/0', '5320/0', '5797/0', '6076/0', '7471/0', '7030/1', '7030/3','7048/1', '7048/3', '7056/1', '7056/2', '7072/1', '7072/2', '7617/1', '7617/2', '7617/3', '7609/0']
     df = df[df['Código da Infração/Desdobramento'].isin(codigos_infracoes_filtrados)]
     df = df[df['Placa'].str.startswith('I')]
-
-    # Remover as colunas indesejadas do DataFrame
     df.drop(columns=["Nº do Auto de Infração", "Data da Infração", "Data de Vencimento da Notificação"], inplace=True)
-
     download(df)
-
-# PRF - RS
 def PRF_RS_penalidade(uploaded_file):
-    print("fazer")
-
-# PRF - Outros estados    
+    padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2}),\s([A-Z]\d{9}),\s(\d{2}/\d{2}/\d{4}),\s(\d{4}/\d{1,2}),\s(R\$[\d.,]+),\s(\d{2}/\d{2}/\d{4})"
+    todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
+    df = pd.DataFrame(todas_tabelas, columns=["Placa", "Nº do Auto de Infração", "Data da Infração", "Código da Infração/Desdobramento","Valor multa", "Data de Vencimento da Notificação"]
+    codigos_infracoes_filtrados =  ['5169/1', '5169/2', '7579/0', '5215/1', '5215/2', '5240/0', '5258/1', '5258/2', '5258/3', '5266/1', '5266/2' , '5266/3', '5274/1', '5274/2', '5282/0', '5290/0', '5304/0', '5312/0', '5320/0', '5797/0', '6076/0', '7471/0', '7030/1', '7030/3','7048/1', '7048/3', '7056/1', '7056/2', '7072/1', '7072/2', '7617/1', '7617/2', '7617/3', '7609/0']
+    df = df[df['Código da Infração/Desdobramento'].isin(codigos_infracoes_filtrados)]
+    df = df[df['Placa'].str.startswith('I')]
+    df.drop(columns=["Nº do Auto de Infração", "Data da Infração","Valor multa","Data de Vencimento da Notificação"], inplace=True)
+    download(df)
+# PRF - Outros estados        
 def PRF_outros_recusa(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
+    
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{4}/\d)\s(\d{2}/\d{2}/\d{4})"
 
     # Inicialize uma lista vazia para armazenar todas as tabelas encontradas
@@ -302,7 +219,7 @@ def PRF_outros_recusa(uploaded_file):
 
     download(df)
 def PRF_outros_bafometro(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
+    
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{4}/\d)\s(\d{2}/\d{2}/\d{4})"
 
     # Inicialize uma lista vazia para armazenar todas as tabelas encontradas
@@ -321,7 +238,7 @@ def PRF_outros_bafometro(uploaded_file):
 
     download(df)
 def PRF_outros_completo(uploaded_file):
-    # Expressão regular otimizada para identificar as linhas da tabela
+    
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{4}/\d)\s(\d{2}/\d{2}/\d{4})"
 
     # Inicialize uma lista vazia para armazenar todas as tabelas encontradas
