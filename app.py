@@ -15,7 +15,7 @@ options = webdriver.ChromeOptions()
 options.add_argument('--no-sandbox')
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
-options.add_argument('--diable-dve-shm-uage')
+options.add_argument('--disable-dev-shm-usage')
 options.binary_location = '/usr/lib/chromium-browser/chromedriver'
 driver = webdriver.Chrome(options=options)
 
