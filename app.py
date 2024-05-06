@@ -192,7 +192,7 @@ def PRF_RS_autuacao(uploaded_file):
 def PRF_RS_penalidade(uploaded_file):
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2}),\s([A-Z]\d{9}),\s(\d{2}/\d{2}/\d{4}),\s(\d{4}/\d{1,2}),\s(R\$[\d.,]+),\s(\d{2}/\d{2}/\d{4})"
     todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
-    df = pd.DataFrame(todas_tabelas, columns=["Placa", "Nº do Auto de Infração", "Data da Infração", "Código da Infração/Desdobramento","Valor multa", "Data de Vencimento da Notificação"]
+    df = pd.DataFrame(todas_tabelas, columns=["Placa", "Nº do Auto de Infração", "Data da Infração", "Código da Infração/Desdobramento","Valor multa", "Data de Vencimento da Notificação"])
     codigos_infracoes_filtrados =  ['5169/1', '5169/2', '7579/0', '5215/1', '5215/2', '5240/0', '5258/1', '5258/2', '5258/3', '5266/1', '5266/2' , '5266/3', '5274/1', '5274/2', '5282/0', '5290/0', '5304/0', '5312/0', '5320/0', '5797/0', '6076/0', '7471/0', '7030/1', '7030/3','7048/1', '7048/3', '7056/1', '7056/2', '7072/1', '7072/2', '7617/1', '7617/2', '7617/3', '7609/0']
     df = df[df['Código da Infração/Desdobramento'].isin(codigos_infracoes_filtrados)]
     df = df[df['Placa'].str.startswith('I')]
