@@ -182,31 +182,36 @@ def detran_ES_processos(uploaded_file):
                 nome = " ".join(palavras[indice_sr + 1 : indice_cpf])
                 return nome
         return
-    todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
+    
+    # Inicialize a lista para armazenar os valores capturados
+    valores_capturados = []
+    
+    # Defina o padrão da linha da tabela
     padrao_linha_tabela = r"\d{4}-[A-Z0-9]{5}"
+    
+    # Extrai todas as tabelas do arquivo
+    todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
+    
+    # Cria um DataFrame com as tabelas extraídas
     df = pd.DataFrame(todas_tabelas, columns=["Proc Adm"])
     df2 = df.copy()
+    
     # Loop através das linhas do DataFrame
     for indice, linha in df2.iterrows():
-        # Abra o site
+        # Abre o site
         driver.get('https://processoeletronico.es.gov.br')
 
-        # Insira a consulta ou os dados relevantes (substitua os campos e seletores HTML apropriados)
+        # Insere a consulta ou os dados relevantes
         campo_pesquisa = driver.find_element(By.XPATH, '//*[@id="protocolo"]')
-        time.sleep(0)
+        campo_pesquisa.send_keys(str(linha['Proc Adm']))
 
-        campo_pesquisa.send_keys(str(linha['Proc Adm']))  # Certifique-se de converter para string
-        time.sleep(0)
-
-        # Envie a consulta (se houver um botão de pesquisa)
+        # Envie a consulta
         botao_pesquisar = driver.find_element(By.XPATH,'//*[@id="btn-submit"]')
-        time.sleep(0)
         botao_pesquisar.click()
         time.sleep(2.2)
 
-        # Capture o valor que você deseja extrair (substitua o seletor HTML apropriado)
+        # Capture o valor desejado
         valor = driver.find_element(By.XPATH, "//*[@id='summary']").text
-        time.sleep(0)
 
         # Armazene o valor capturado na lista
         valores_capturados.append(valor)
@@ -214,6 +219,7 @@ def detran_ES_processos(uploaded_file):
 
     # Feche o navegador
     driver.quit()
+
     # Adicione os valores capturados ao DataFrame
     df2['Valor Capturado'] = valores_capturados
     df2['Nome Completo'] = df2['Valor Capturado'].apply(extrair_nome)
