@@ -370,8 +370,9 @@ consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
 servico_sel = st.sidebar.selectbox("Serviço", servicos)
 
 if servico_sel == "Leitura de PDF":
-    st.title("Manutenção nos itens:")\
+    st.title("Manutenção nos itens:")
     st.markdown("""- DETRAN - ES 
+                
                 - Nomes faltantes""")
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
