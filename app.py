@@ -6,10 +6,7 @@ import pandas as pd
 import pdfplumber
 import requests
 import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import pandas as pd
-import time
+import chromedriver_autoinstaller
 
 options = webdriver.ChromeOptions()
 options.add_argument('--no-sandbox')
