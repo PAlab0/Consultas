@@ -359,7 +359,6 @@ def PRF_outros_completo(uploaded_file):
     df.drop(columns=["Nº do Auto de Infração", "Data da Infração", "Data de Vencimento da Notificação"], inplace=True)
 
     download(df)
-
 # Nomes Faltantes
 def nomes_faltantes(uploaded_file):
     print("fazer")
@@ -421,8 +420,6 @@ if servico_sel == "Leitura de PDF":
         if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
             if st.sidebar.button('Processar PDF', type="primary"):
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
-
-
 
 
 elif servico_sel == "Consulta de placas - GOV":
