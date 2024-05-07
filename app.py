@@ -1,19 +1,60 @@
 import streamlit as st
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 import re
 import pandas as pd
 import pdfplumber
 import requests
 import time
-import chromedriver_autoinstaller
+import zipfile
+import os
 
-options = webdriver.ChromeOptions()
-options.add_argument('--no-sandbox')
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
-options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(options=options)
+def download_chromedriver():
+    # Endpoint da API
+    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"
+    response = requests.get(url)
+    data = response.json()
+
+    # Detectar o sistema operacional e arquitetura
+    os_name = platform.system().lower()
+    if os_name == 'windows':
+        os_name += '32' if platform.architecture()[0] == '32bit' else '64'
+    elif os_name == 'darwin':
+        os_name = 'mac-arm64' if platform.processor() == 'arm' else 'mac-x64'
+    else:
+        os_name += '64'
+
+    # Obter a URL de download do ChromeDriver para o sistema operacional atual
+    latest_stable = data['stable']['downloads']['chromedriver'][os_name]
+
+    # Fazer o download do arquivo ZIP do ChromeDriver
+    r = requests.get(latest_stable)
+    zip_path = "chromedriver.zip"
+    with open(zip_path, 'wb') as file:
+        file.write(r.content)
+
+    # Extrair o arquivo ZIP
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall()
+
+    # Remover o arquivo ZIP após a extração
+    os.remove(zip_path)
+
+    # Caminho para o executável do ChromeDriver extraído
+    chromedriver_path = './chromedriver'  # Ajuste este caminho conforme necessário
+    return chromedriver_path
+
+
+# Configurar o ChromeDriver
+def setup_driver():
+    chromedriver_path = download_chromedriver()
+    os.environ["PATH"] += os.pathsep + os.path.dirname(os.path.abspath(chromedriver_path))
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
+    return driver
+
 
 st.set_page_config(
     page_title="PA - Consultas",
