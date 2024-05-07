@@ -208,7 +208,7 @@ def detran_MS_placas(uploaded_file):
     df3.drop(columns=["Número Auto", "Código da Infração"], inplace=True)
     df3 = df3.drop_duplicates(subset=['Placa'])
     download(df)
-# DETRAN - ES
+# DETRAN - ES - Pendente
 def detran_ES_processos(uploaded_file):
     def extrair_nome(texto):
         palavras = texto.split()
@@ -428,11 +428,7 @@ elif servico_sel == "Consulta de placas - GOV":
     
     # Lógica para criar os inputs de acordo com a escolha do usuário
     if consulta_sel == "Manual":
-        st.title("Digite os detalhes para Consulta de placas - GOV:")
-        input1 = st.text_input("Input 1 para Consulta de placas - GOV:")
-        input2 = st.text_input("Input 2 para Consulta de placas - GOV:")
-        input3 = st.text_input("Input 3 para Consulta de placas - GOV:")
-        input4 = st.text_input("Input 4 para Consulta de placas - GOV:")
+        st.title("Manutençao - Consulta de placas - GOV:")
     elif consulta_sel == "Automatizada":
         st.sidebar.title("""Upload de arquivo 🗂️""")
         uploaded_files = st.sidebar.file_uploader("Escolha o seu arquivo Excel", accept_multiple_files=True, type=('xlsx', 'xls'), help=("Coloque um arquivo .xlsx ou .xls"))
