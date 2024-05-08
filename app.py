@@ -417,10 +417,10 @@ if servico_sel == "Leitura de PDF":
     # Lógica para selecionar o arquivo para processamento de PDF 
     
     st.sidebar.title("Upload de arquivo 🗂️")
-    if opcoes_processamento == "Nomes Faltantes":
+    if opcoes_tipo_pdf == "nomes_faltantes":
         uploaded_file_completo = st.sidebar.file_uploader(f"Escolha o seu Excel - Completo", accept_multiple_files=False, type=('xlsx'), help=("Coloque um arquivo .xlsx"))
         uploaded_file_reduzido = st.sidebar.file_uploader(f"Escolha o seu Excel - Reduzido", accept_multiple_files=False, type=('xlsx'), help=("Coloque um arquivo .xslsx"))
-    elif opcoes_processamento != "Nomes Faltantes":
+    elif opcoes_tipo_pdf != "nomes_faltantes":
         uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
     if uploaded_file != None:
