@@ -361,7 +361,13 @@ def PRF_outros_completo(uploaded_file):
     download(df)
 # Nomes Faltantes
 def nomes_faltantes(uploaded_file):
+    # Carregar os arquivos CSV
     print("fazer")
+
+
+
+
+
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
@@ -415,18 +421,13 @@ if servico_sel == "Leitura de PDF":
     opcao_processamento_sel = st.sidebar.selectbox(f"Selecione uma opção {tipo_pdf_sel}", opcoes_processamento_selecionado_nomes)
     
     # Lógica para selecionar o arquivo para processamento de PDF 
-    
     st.sidebar.title("Upload de arquivo 🗂️")
-    if tipo_pdf_sel == "Nomes Faltantes":
-        uploaded_file_completo = st.sidebar.file_uploader(f"Escolha o seu Excel - Completo", accept_multiple_files=False, type=('xlsx'), help=("Coloque um arquivo .xlsx"))
-        uploaded_file_reduzido = st.sidebar.file_uploader(f"Escolha o seu Excel - Reduzido", accept_multiple_files=False, type=('xlsx'), help=("Coloque um arquivo .xslsx"))
-    elif tipo_pdf_sel != "Nomes Faltantes":
-        uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
+    uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
-        if uploaded_file != None:
-            if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
-                if st.sidebar.button('Processar PDF', type="primary"):
-                    opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
+    if uploaded_file != None:
+        if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
+            if st.sidebar.button('Processar PDF', type="primary"):
+                opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
 
 elif servico_sel == "Consulta de placas - GOV":
