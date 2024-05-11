@@ -48,12 +48,18 @@ def download_chromedriver():
 
 # Configurar o ChromeDriver
 def setup_driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--diable-dve-shm-uage')
+
     chromedriver_path = download_chromedriver()
     os.environ["PATH"] += os.pathsep + os.path.dirname(os.path.abspath(chromedriver_path))
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-gpu')
+
+
+    options.binary_location = chromedriver_path
+    
     driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
     return driver
 
