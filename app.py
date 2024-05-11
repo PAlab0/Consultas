@@ -411,10 +411,7 @@ if servico_sel == "Leitura de PDF":
     uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
     if uploaded_file != None:
-        if tipo_pdf_sel == "Nomes Faltantes" and opcao_processamento_sel == "Nomes Faltantes":
-            uploaded_file1 = st.sidebar.file_uploader(f"Escolha o seu arquivo 1 - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
-            uploaded_file2 = st.sidebar.file_uploader(f"Escolha o seu arquivo 2 - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
-        elif tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
+        if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
             if st.sidebar.button('Processar PDF', type="primary"):
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
