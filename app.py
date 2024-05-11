@@ -401,19 +401,27 @@ if servico_sel == "Leitura de PDF":
     # Selecionar tipo de PDF e opção de processamento
     opcoes_tipo_pdf = list(opcoes_processamento.keys())
     tipo_pdf_sel = st.sidebar.selectbox("Tipo de PDF", opcoes_tipo_pdf)
-    
+
     opcoes_processamento_selecionado = opcoes_processamento[tipo_pdf_sel]
     opcoes_processamento_selecionado_nomes = list(opcoes_processamento_selecionado.keys())
     opcao_processamento_sel = st.sidebar.selectbox(f"Selecione uma opção {tipo_pdf_sel}", opcoes_processamento_selecionado_nomes)
-    
+
     # Lógica para selecionar o arquivo para processamento de PDF 
     st.sidebar.title("Upload de arquivo 🗂️")
-    uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
-    if uploaded_file != None:
-        if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
-            if st.sidebar.button('Processar PDF', type="primary"):
+    if tipo_pdf_sel == "nomes faltantes":
+        uploaded_file1 = st.sidebar.file_uploader("Escolha o seu primeiro PDF - nomes faltantes", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
+        uploaded_file2 = st.sidebar.file_uploader("Escolha o seu segundo PDF - nomes faltantes", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
+    else:
+        uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
+
+    if (uploaded_file != None or (uploaded_file1 != None and uploaded_file2 != None)) and tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
+        if st.sidebar.button('Processar PDF', type="primary"):
+            if tipo_pdf_sel == "nomes faltantes":
+                opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file1, uploaded_file2)
+            else:
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
+    
 
 
 elif servico_sel == "Consulta de placas - GOV":
