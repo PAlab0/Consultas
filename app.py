@@ -58,6 +58,8 @@ def setup_driver():
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--window-size=1920,1080')  # Definindo o tamanho da janela
+    options.add_argument('--ignore-certificate-errors')  # Ignorando erros de certificado
 
     chromedriver_path = download_chromedriver()
 
