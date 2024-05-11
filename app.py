@@ -8,6 +8,9 @@ import time
 import zipfile
 import os
 
+servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
+consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
+
 def download_chromedriver():
     # Endpoint da API
     url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"
@@ -43,7 +46,6 @@ def download_chromedriver():
     chromedriver_path = './chromedriver'  # Ajuste este caminho conforme necessário
     return chromedriver_path
 
-
 # Configurar o ChromeDriver
 def setup_driver():
     chromedriver_path = download_chromedriver()
@@ -54,7 +56,6 @@ def setup_driver():
     options.add_argument('--disable-gpu')
     driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
     return driver
-
 
 st.set_page_config(
     page_title="PA - Consultas",
@@ -135,26 +136,19 @@ def dow_pdf(file):
     
 # DNIT
 def dnit_rs(uploaded_file):
-    
-    padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2}\s/\s[A-Z]{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{3}-\d)\s/\s(\d)"
-    
+    padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2}\s/\s[A-Z]{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{3}-\d)\s/\s(\d)"  
     # Chamando a função loop para processar o PDF e criar o DataFrame
     todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
-
     # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df = pd.DataFrame(todas_tabelas, columns=["Placa/UF", "Nº do Auto de Infração", "Data da Infração", "Código da Infração", "Desdobramento"])
-
     # Filtra as linhas que contêm "/RS" na coluna "Placa/UF"
     df = df[df["Placa/UF"].str.contains(" / RS")]
     df = df[df["Código da Infração"] == "747-1"]
     df = df[df["Desdobramento"] == "0"]
-
     # Remove as colunas indesejadas do DataFrame
     df.drop(columns=["Nº do Auto de Infração", "Data da Infração", "Código da Infração", "Desdobramento"], inplace=True)
-
     # Remove o UF da coluna "Placa/UF"
     df["Placa/UF"] = df["Placa/UF"].str.split("/", n=1).str[0]
-
     download(df)
 # DETRAN - MS
 def detran_MS_processos(uploaded_file):
@@ -364,14 +358,6 @@ def nomes_faltantes(uploaded_file):
     # Carregar os arquivos CSV
     print("fazer")
 
-
-
-
-
-
-servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
-consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
-
 # Obtendo a entrada do usuário para selecionar o serviço
 servico_sel = st.sidebar.selectbox("Serviço", servicos)
 
@@ -425,7 +411,10 @@ if servico_sel == "Leitura de PDF":
     uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
     if uploaded_file != None:
-        if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
+        if tipo_pdf_sel == "Nomes Faltantes":
+            uploaded_file1 = st.sidebar.file_uploader(f"Escolha o seu arquivo 1 - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
+            uploaded_file2 = st.sidebar.file_uploader(f"Escolha o seu arquivo 2 - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
+        elif tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
             if st.sidebar.button('Processar PDF', type="primary"):
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
