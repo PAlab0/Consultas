@@ -58,8 +58,7 @@ def setup_driver():
     options.add_argument('--disable-infobars')  # Desativa as barras de informação
     options.add_argument("--disable-extensions")  # Desativa as extensões
     options.add_argument("--disable-popup-blocking")  # Desativa o bloqueador de pop-ups
-
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1920,1080')  # Definindo o tamanho da janela
