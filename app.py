@@ -409,7 +409,7 @@ if servico_sel == "Leitura de PDF":
     # Lógica para selecionar o arquivo para processamento de PDF 
     st.sidebar.title("Upload de arquivo 🗂️")
 
-    if tipo_pdf_sel == "nomes faltantes":
+    if tipo_pdf_sel == "Nomes Faltantes":
         uploaded_file1 = st.sidebar.file_uploader("Escolha o seu primeiro PDF - nomes faltantes", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
         uploaded_file2 = st.sidebar.file_uploader("Escolha o seu segundo PDF - nomes faltantes", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
     else:
@@ -417,7 +417,7 @@ if servico_sel == "Leitura de PDF":
 
     if (uploaded_file != None or (uploaded_file1 != None and uploaded_file2 != None)) and tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
         if st.sidebar.button('Processar PDF', type="primary"):
-            if tipo_pdf_sel == "nomes faltantes":
+            if tipo_pdf_sel == "Nomes Faltantes":
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file1, uploaded_file2)
             else:
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
