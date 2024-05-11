@@ -230,6 +230,7 @@ def detran_MS_placas(uploaded_file):
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
     # Configurar e inicializar o ChromeDriver
+    drive_dow = download_chromedriver()
     driver = setup_driver()
     def extrair_nome(texto):
         palavras = texto.split()
