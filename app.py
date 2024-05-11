@@ -356,8 +356,8 @@ def PRF_outros_completo(uploaded_file):
 # Nomes Faltantes
 def nomes_faltantes(uploaded_file_comp,uploaded_file_red):
     # Carregar os arquivos CSV
-    COMPLETO = pd.read_csv(f"{uploaded_file_comp}.csv", header=None)
-    REDUZIDO = pd.read_csv(f"{uploaded_file_red}.csv", header=None)
+    COMPLETO = pd.read_csv(uploaded_file_comp, header=None)
+    REDUZIDO = pd.read_csv(uploaded_file_red, header=None)
     COMPLETO.columns = ["COMPLETO"]
     REDUZIDO.columns = ["REDUZIDO"]
     # Encontrar nomes que estão em COMPLETO mas não em REDUZIDO
