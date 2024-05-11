@@ -57,16 +57,25 @@ def setup_driver():
     options.add_argument('--no-sandbox')
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    options.add_argument('--diable-dve-shm-uage')
+    options.add_argument('--disable-dev-shm-usage')
 
     chromedriver_path = download_chromedriver()
-    os.environ["PATH"] += os.pathsep + os.path.dirname(os.path.abspath(chromedriver_path))
 
+    # Verificação se o caminho do ChromeDriver foi obtido corretamente
+    if chromedriver_path is None:
+        print("Falha ao obter o caminho do ChromeDriver. Verifique os logs para mais detalhes.")
+        return None
 
+    # Adicionando o diretório do ChromeDriver ao PATH do sistema
+    chromedriver_dir = os.path.dirname(os.path.abspath(chromedriver_path))
+    os.environ["PATH"] += os.pathsep + chromedriver_dir
+
+    # Definindo a localização binária (necessário apenas se você estiver usando o executável do navegador Chrome junto com o ChromeDriver)
     options.binary_location = chromedriver_path
 
     driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
     return driver
+
 
 st.set_page_config(
     page_title="PA - Consultas",
