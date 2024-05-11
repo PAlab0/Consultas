@@ -416,6 +416,11 @@ if servico_sel == "Leitura de PDF":
     
     # Lógica para selecionar o arquivo para processamento de PDF 
     st.sidebar.title("Upload de arquivo 🗂️")
+
+    uploaded_file_comp = None
+    uploaded_file_red = None
+    uploaded_file = None
+
     if tipo_pdf_sel == "Nomes Faltantes":
         uploaded_file_comp = st.sidebar.file_uploader(f"Escolha o seu csv - Completo", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
         uploaded_file_red = st.sidebar.file_uploader(f"Escolha o seu csv - Reduzido", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
