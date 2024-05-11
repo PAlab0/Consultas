@@ -424,7 +424,7 @@ if servico_sel == "Leitura de PDF":
         uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
     # Botão unificado de processamento
-    if (uploaded_file_comp is not None and uploaded_file_red is not None) or uploaded_file is not None:
+    if uploaded_file_red != None or uploaded_file != None:
         if st.sidebar.button('Processar Arquivo'):
             if tipo_pdf_sel == "Nomes Faltantes":
                 # Passando ambos os arquivos CSV para a função de processamento
