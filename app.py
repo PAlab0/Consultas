@@ -354,9 +354,17 @@ def PRF_outros_completo(uploaded_file):
 
     download(df)
 # Nomes Faltantes
-def nomes_faltantes(uploaded_file):
+def nomes_faltantes(uploaded_file_comp,uploaded_file_red):
     # Carregar os arquivos CSV
-    print("fazer")
+    COMPLETO = pd. read_csv(f"{uploaded_file_comp}.csv", header=None)
+    REDUZIDO = pd. read_csv(f"{uploaded_file_red}.csv", header=None)
+    COMPLETO.columns = ["COMPLETO"]
+    REDUZIDO.columns = ["REDUZIDO"]
+    # Encontrar nomes que estão em COMPLETO mas não em REDUZIDO
+    nomes_faltantes = COMPLETO[~COMPLETO["COMPLETO"].isin(REDUZIDO["REDUZIDO"])]
+    # Renomear a coluna
+    df. columns = ["FINAL"]
+    download(df)
 
 # Obtendo a entrada do usuário para selecionar o serviço
 servico_sel = st.sidebar.selectbox("Serviço", servicos)
@@ -401,27 +409,23 @@ if servico_sel == "Leitura de PDF":
     # Selecionar tipo de PDF e opção de processamento
     opcoes_tipo_pdf = list(opcoes_processamento.keys())
     tipo_pdf_sel = st.sidebar.selectbox("Tipo de PDF", opcoes_tipo_pdf)
-
+    
     opcoes_processamento_selecionado = opcoes_processamento[tipo_pdf_sel]
     opcoes_processamento_selecionado_nomes = list(opcoes_processamento_selecionado.keys())
     opcao_processamento_sel = st.sidebar.selectbox(f"Selecione uma opção {tipo_pdf_sel}", opcoes_processamento_selecionado_nomes)
-
+    
     # Lógica para selecionar o arquivo para processamento de PDF 
     st.sidebar.title("Upload de arquivo 🗂️")
-
     if tipo_pdf_sel == "Nomes Faltantes":
-        uploaded_file1 = st.sidebar.file_uploader("Escolha o seu primeiro PDF - nomes faltantes", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
-        uploaded_file2 = st.sidebar.file_uploader("Escolha o seu segundo PDF - nomes faltantes", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
-    else:
+        uploaded_file_comp = st.sidebar.file_uploader(f"Escolha o seu csv - Completo - {tipo_pdf_sel}", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
+        uploaded_file_red = st.sidebar.file_uploader(f"Escolha o seu csv - Reduzido - {tipo_pdf_sel}", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
+    elif tipo_pdf_sel != "Nomes Faltantes":
         uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
-    if (uploaded_file != None or (uploaded_file1 != None and uploaded_file2 != None)) and tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
-        if st.sidebar.button('Processar PDF', type="primary"):
-            if tipo_pdf_sel == "Nomes Faltantes":
-                opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file1, uploaded_file2)
-            else:
-                opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
-    
+        if uploaded_file != None:
+            if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
+                if st.sidebar.button('Processar PDF', type="primary"):
+                    opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
 
 elif servico_sel == "Consulta de placas - GOV":
