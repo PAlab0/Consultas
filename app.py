@@ -363,8 +363,8 @@ def nomes_faltantes(uploaded_file_comp,uploaded_file_red):
     # Encontrar nomes que estão em COMPLETO mas não em REDUZIDO
     nomes_faltantes = COMPLETO[~COMPLETO["COMPLETO"].isin(REDUZIDO["REDUZIDO"])]
     # Renomear a coluna
-    df.columns = ["FINAL"]
-    download(df)
+    nomes_faltantes.columns = ["FINAL"]
+    download(nomes_faltantes)
 
 # Obtendo a entrada do usuário para selecionar o serviço
 servico_sel = st.sidebar.selectbox("Serviço", servicos)
