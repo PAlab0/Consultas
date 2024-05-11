@@ -371,7 +371,7 @@ servico_sel = st.sidebar.selectbox("Serviço", servicos)
 
 if servico_sel == "Leitura de PDF":
     st.title("Manutenção nos itens:")
-    st.markdown("""- DETRAN - ES  \n - Nomes faltantes""")
+    st.markdown("""- DETRAN - ES """)
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
         "DETRAN - ES": {
