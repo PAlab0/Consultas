@@ -356,14 +356,14 @@ def PRF_outros_completo(uploaded_file):
 # Nomes Faltantes
 def nomes_faltantes(uploaded_file_comp,uploaded_file_red):
     # Carregar os arquivos CSV
-    COMPLETO = pd. read_csv(f"{uploaded_file_comp}.csv", header=None)
-    REDUZIDO = pd. read_csv(f"{uploaded_file_red}.csv", header=None)
+    COMPLETO = pd.read_csv(f"{uploaded_file_comp}.csv", header=None)
+    REDUZIDO = pd.read_csv(f"{uploaded_file_red}.csv", header=None)
     COMPLETO.columns = ["COMPLETO"]
     REDUZIDO.columns = ["REDUZIDO"]
     # Encontrar nomes que estão em COMPLETO mas não em REDUZIDO
     nomes_faltantes = COMPLETO[~COMPLETO["COMPLETO"].isin(REDUZIDO["REDUZIDO"])]
     # Renomear a coluna
-    df. columns = ["FINAL"]
+    df.columns = ["FINAL"]
     download(df)
 
 # Obtendo a entrada do usuário para selecionar o serviço
