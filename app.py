@@ -202,7 +202,7 @@ def detran_MS_placas(uploaded_file):
     df3.drop(columns=["Número Auto", "Código da Infração"], inplace=True)
     df3 = df3.drop_duplicates(subset=['Placa'])
     download(df)
-# DETRAN - ES - Pendente
+# DETRAN - ES
 def detran_ES_processos(uploaded_file):
     def extrair_nome(texto):
         palavras = texto.split()
