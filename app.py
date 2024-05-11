@@ -204,6 +204,8 @@ def detran_MS_placas(uploaded_file):
     download(df)
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
+    # Configurar e inicializar o ChromeDriver
+    driver = setup_driver()
     def extrair_nome(texto):
         palavras = texto.split()
         if "Sr.(a)" in palavras:
