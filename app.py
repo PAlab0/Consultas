@@ -419,6 +419,12 @@ if servico_sel == "Leitura de PDF":
     if tipo_pdf_sel == "Nomes Faltantes":
         uploaded_file_comp = st.sidebar.file_uploader(f"Escolha o seu csv - Completo - {tipo_pdf_sel}", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
         uploaded_file_red = st.sidebar.file_uploader(f"Escolha o seu csv - Reduzido - {tipo_pdf_sel}", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
+        
+        if uploaded_file != None or uploaded_file_red != None:
+            if tipo_pdf_sel in opcoes_processamento and opcao_processamento_sel in opcoes_processamento[tipo_pdf_sel]:
+                if st.sidebar.button('Processar PDF', type="primary"):
+                    opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
+
     elif tipo_pdf_sel != "Nomes Faltantes":
         uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
