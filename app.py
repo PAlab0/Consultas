@@ -18,12 +18,13 @@ servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços d
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
 
 def download_chromedriver():
-    # Endpoint da API
     url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"
     response = requests.get(url)
     data = response.json()
 
-    # Detectar o sistema operacional e arquitetura
+    # Imprimir a estrutura da resposta para verificação
+    print(data)
+
     os_name = platform.system().lower()
     if os_name == 'windows':
         os_name += '32' if platform.architecture()[0] == '32bit' else '64'
@@ -32,23 +33,21 @@ def download_chromedriver():
     else:
         os_name += '64'
 
-    # Obter a URL de download do ChromeDriver para o sistema operacional atual
-    latest_stable = data['stable']['downloads']['chromedriver'][os_name]
+    try:
+        latest_stable = data['stable']['downloads']['chromedriver'][os_name]
+    except KeyError as e:
+        print(f"Erro ao acessar dados para {os_name}: {e}")
+        return None  # Ou tratamento de erro adequado
 
-    # Fazer o download do arquivo ZIP do ChromeDriver
     r = requests.get(latest_stable)
     zip_path = "chromedriver.zip"
     with open(zip_path, 'wb') as file:
         file.write(r.content)
 
-    # Extrair o arquivo ZIP
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall()
 
-    # Remover o arquivo ZIP após a extração
     os.remove(zip_path)
-
-    # Caminho para o executável do ChromeDriver extraído
     chromedriver_path = './chromedriver'  # Ajuste este caminho conforme necessário
     return chromedriver_path
 
