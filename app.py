@@ -396,6 +396,17 @@ if servico_sel == "Leitura de PDF":
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
         from webdriver_manager.chrome import ChromeDriverManager
+        def setup_chromedriver():
+            url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
+            response = requests.get(url)
+            open('chromedriver.zip', 'wb').write(response.content)
+
+            with zipfile.ZipFile('chromedriver.zip', 'r') as zip_ref:
+                zip_ref.extractall()
+
+            os.chmod('chromedriver', stat.S_IEXEC)
+
+            return './chromedriver'
 
         def get_driver():
             options = Options()
@@ -403,7 +414,10 @@ if servico_sel == "Leitura de PDF":
             options.add_argument('--disable-gpu')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
-            driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)
+
+
+            path = setup_chromedriver() 
+            driver = webdriver.Chrome(executable_path=path, options=options)
             return driver
 
         driver = get_driver() 
