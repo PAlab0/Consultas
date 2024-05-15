@@ -405,6 +405,7 @@ if servico_sel == "Leitura de PDF":
                     ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
                 ),
                 options=options,
+                
             )
 
         options = Options()
