@@ -10,10 +10,62 @@ import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+
 warnings.filterwarnings('ignore')
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
+
+def download_chromedriver():
+    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"
+    response = requests.get(url)
+    data = response.json()
+
+    # Imprimir a estrutura da resposta para verificação
+    print(data)
+
+    os_name = platform.system().lower()
+    if os_name == 'windows':
+        os_name += '32' if platform.architecture()[0] == '32bit' else '64'
+    elif os_name == 'darwin':
+        os_name = 'mac-arm64' if platform.processor() == 'arm' else 'mac-x64'
+    else:
+        os_name += '64'
+
+    try:
+        latest_stable = data['stable']['downloads']['chromedriver'][os_name]
+    except KeyError as e:
+        print(f"Erro ao acessar dados para {os_name}: {e}")
+        return None  # Ou tratamento de erro adequado
+
+    r = requests.get(latest_stable)
+    zip_path = "chromedriver.zip"
+    with open(zip_path, 'wb') as file:
+        file.write(r.content)
+
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall()
+
+    os.remove(zip_path)
+    chromedriver_path = './chromedriver'  # Ajuste este caminho conforme necessário
+    return chromedriver_path
+
+# Configurar o ChromeDriver
+def setup_driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-infobars')
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-popup-blocking")
+    #options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--window-size=1920,1080')
+    options.add_argument('--ignore-certificate-errors')
+
+    # Configura o ChromeDriver automaticamente
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    return driver
 
 
 st.set_page_config(
@@ -163,26 +215,8 @@ def detran_MS_placas(uploaded_file):
     download(df)
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
-    options = Options()
-    options.add_argument("--disable-gpu")  # Desabilitar a aceleração de hardware, útil no modo headless
-
-    # Configura o ChromeDriver automaticamente
-    driver = webdriver.Chrome(options=options)
-    driver.get("http://www.scrapingbee.com")
-    # Match the first h1 tag on the page
-    first_h1 = driver.find_element(By.XPATH, "//h1")
-
-    # Extrai o texto do elemento
-    titulo = first_h1.text
-
-    # Imprime o título
-    print("Título da página:", titulo)
-
-    # Fecha o navegador
-    driver.quit()
-
-    '''
     # Configurar e inicializar o ChromeDriver
+    drive_dow = download_chromedriver()
     driver = setup_driver()
     def extrair_nome(texto):
         palavras = texto.split()
@@ -237,8 +271,6 @@ def detran_ES_processos(uploaded_file):
     df2['Nome Completo'] = df2['Nome Completo'].str.replace(',', '')
     df2 = df2.drop('Valor Capturado', axis=1)
     download(df2)
-    '''
-
 # DETRAN - RS
 def detran_RS_placas(uploaded_file):
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s(\d{2}/\d{2}/\d{4})\s(\d+)\s([A-Z]{1,2}\d+)\s(\d+)"
@@ -419,6 +451,7 @@ if servico_sel == "Leitura de PDF":
             else:
                 # Passando o arquivo PDF para a função de processamento
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
+
 
 elif servico_sel == "Consulta de placas - GOV":
     # Obtendo a entrada do usuário para selecionar o tipo de consulta
