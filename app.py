@@ -19,7 +19,56 @@ warnings.filterwarnings('ignore')
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
 
+def download_chromedriver():
+    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"
+    response = requests.get(url)
+    data = response.json()
 
+    # Imprimir a estrutura da resposta para verificação
+    print(data)
+
+    os_name = platform.system().lower()
+    if os_name == 'windows':
+        os_name += '32' if platform.architecture()[0] == '32bit' else '64'
+    elif os_name == 'darwin':
+        os_name = 'mac-arm64' if platform.processor() == 'arm' else 'mac-x64'
+    else:
+        os_name += '64'
+
+    try:
+        latest_stable = data['stable']['downloads']['chromedriver'][os_name]
+    except KeyError as e:
+        print(f"Erro ao acessar dados para {os_name}: {e}")
+        return None  # Ou tratamento de erro adequado
+
+    r = requests.get(latest_stable)
+    zip_path = "chromedriver.zip"
+    with open(zip_path, 'wb') as file:
+        file.write(r.content)
+
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall()
+
+    os.remove(zip_path)
+    chromedriver_path = './chromedriver'  # Ajuste este caminho conforme necessário
+    return chromedriver_path
+
+# Configurar o ChromeDriver
+def setup_driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-infobars')
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-popup-blocking")
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--window-size=1920,1080')
+    options.add_argument('--ignore-certificate-errors')
+
+    # Configura o ChromeDriver automaticamente
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    return driver
 
 
 
@@ -344,34 +393,39 @@ if servico_sel == "Leitura de PDF":
     
     if st.button('Scrap', type="primary"):
         from selenium import webdriver
-        from webdriver_manager.chrome import ChromeDriverManager
+        from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
-        import streamlit as st
+        from webdriver_manager.chrome import ChromeDriverManager
+        import stat
 
-        def init_driver():
-            # Configura o ChromeDriverManager para baixar e configurar o WebDriver automaticamente
-            service = Service(executable_path=ChromeDriverManager().install())
-            options = webdriver.ChromeOptions()
-            # Configurações extras para rodar no ambiente Streamlit ou em ambientes sem GUI
-            options.add_argument("--headless")  # Roda o Chrome em modo headless
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            driver = webdriver.Chrome(service=service, options=options)
+        def setup_chromedriver():
+            url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
+            response = requests.get(url)
+            open('chromedriver.zip', 'wb').write(response.content)
+
+            with zipfile.ZipFile('chromedriver.zip', 'r') as zip_ref:
+                zip_ref.extractall()
+
+            os.chmod('chromedriver', stat.S_IEXEC)
+
+            return './chromedriver'
+
+        def get_driver():
+            options = Options()
+            options.add_argument('--headless')
+            options.add_argument('--disable-gpu')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+
+
+            path = setup_chromedriver() 
+            driver = webdriver.Chrome(executable_path=path, options=options)
             return driver
 
-        def main():
-            st.title("Teste Selenium no Streamlit")
-
-            driver = init_driver()
-            driver.get("https://www.example.com")
-
-            st.write("Título da página:", driver.title)  # Mostra o título da página acessada
-
-            # Fecha o navegador e finaliza o driver
-            driver.quit()
-
-        if __name__ == "__main__":
-            main()
+        driver = get_driver() 
+        driver.get("http://example.com")
+        print(driver.page_source)
+        driver.quit()
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
