@@ -15,22 +15,6 @@ warnings.filterwarnings('ignore')
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
 
-# Configurar o ChromeDriver
-def setup_driver():
-    options = Options()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-infobars')
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-popup-blocking")
-    # options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--window-size=1920,1080')
-    options.add_argument('--ignore-certificate-errors')
-
-    # Configura o ChromeDriver automaticamente
-    driver = webdriver.Chrome(options=options)
-    return driver
 
 st.set_page_config(
     page_title="PA - Consultas",
@@ -179,7 +163,20 @@ def detran_MS_placas(uploaded_file):
     download(df)
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
-    driver = setup_driver()
+    # Configurar o ChromeDriver
+    options = Options()
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-infobars')
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-popup-blocking")
+    # options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--window-size=1920,1080')
+    options.add_argument('--ignore-certificate-errors')
+
+    # Configura o ChromeDriver automaticamente
+    driver = webdriver.Chrome(options=options)
     driver.get("http://www.scrapingbee.com")
     # Match the first h1 tag on the page
     first_h1 = driver.find_element(By.XPATH, "//h1")
