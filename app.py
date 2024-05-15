@@ -396,17 +396,7 @@ if servico_sel == "Leitura de PDF":
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
         from webdriver_manager.chrome import ChromeDriverManager
-        '''from webdriver_manager.core.os_manager import ChromeType'''
-
-        '''
         def get_driver():
-            return webdriver.Chrome(
-                service=Service(
-                    ChromeDriverManager(chrome_type=ChromeDriverManager.ChromeType.CHROMIUM).install()
-                ),
-                options=options,
-            )'''
-
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--disable-gpu')
@@ -415,9 +405,12 @@ if servico_sel == "Leitura de PDF":
 
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
-        driver.get("http://example.com")
+        return driver
 
-        st.code(driver.page_source)
+        driver = get_driver()
+        driver.get("http://example.com")
+        print(driver.page_source)
+        driver.quit()
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
