@@ -392,32 +392,31 @@ if servico_sel == "Leitura de PDF":
     st.markdown("""- DETRAN - ES """)
     
     if st.button('Scrap', type="primary"):
-        from selenium import webdriver
-        from selenium.webdriver.chrome.options import Options
-        import time
-        from selenium.webdriver.common.by import By
+        with st.echo():
+            from selenium import webdriver
+            from selenium.webdriver.chrome.options import Options
+            from selenium.webdriver.chrome.service import Service
+            from webdriver_manager.chrome import ChromeDriverManager
+            from webdriver_manager.core.os_manager import ChromeType
 
-        # Define as opções do WebDriver
-        options = Options()
-        options.add_argument("--disable-gpu")  # Desabilitar a aceleração de hardware, útil no modo headless
+            @st.cache_resource
+            def get_driver():
+                return webdriver.Chrome(
+                    service=Service(
+                        ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+                    ),
+                    options=options,
+                )
 
-        # Inicializa o WebDriver com as opções configuradas
-        driver = webdriver.Chrome(options=options)
-        # Espera um momento para garantir que a página tenha carregado completamente
-        time.sleep(2)
+            options = Options()
+            options.add_argument("--disable-gpu")
+            options.add_argument("--headless")
 
-        driver.get("http://www.scrapingbee.com")
-        # Match the first h1 tag on the page
-        first_h1 = driver.find_element(By.XPATH, "//h1")
+            driver = get_driver()
+            driver.get("http://example.com")
 
-        # Extrai o texto do elemento
-        titulo = first_h1.text
+            st.code(driver.page_source)
 
-        # Imprime o título
-        print("Título da página:", titulo)
-
-        # Fecha o navegador
-        driver.quit()
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
         "DETRAN - ES": {
