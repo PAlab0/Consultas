@@ -71,6 +71,7 @@ def setup_driver():
     return driver
 
 
+
 st.set_page_config(
     page_title="PA - Consultas",
     page_icon="https://raw.githubusercontent.com/PAlab0/Consultas/main/Documentos/logo_v.png",
@@ -389,6 +390,34 @@ servico_sel = st.sidebar.selectbox("Serviço", servicos)
 if servico_sel == "Leitura de PDF":
     st.title("Manutenção nos itens:")
     st.markdown("""- DETRAN - ES """)
+    
+    if st.button('Scrap', type="primary"):
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        import time
+        from selenium.webdriver.common.by import By
+
+        # Define as opções do WebDriver
+        options = Options()
+        options.add_argument("--disable-gpu")  # Desabilitar a aceleração de hardware, útil no modo headless
+
+        # Inicializa o WebDriver com as opções configuradas
+        driver = webdriver.Chrome(options=options)
+        # Espera um momento para garantir que a página tenha carregado completamente
+        time.sleep(2)
+
+        driver.get("http://www.scrapingbee.com")
+        # Match the first h1 tag on the page
+        first_h1 = driver.find_element(By.XPATH, "//h1")
+
+        # Extrai o texto do elemento
+        titulo = first_h1.text
+
+        # Imprime o título
+        print("Título da página:", titulo)
+
+        # Fecha o navegador
+        driver.quit()
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
         "DETRAN - ES": {
