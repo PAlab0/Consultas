@@ -392,7 +392,6 @@ if servico_sel == "Leitura de PDF":
     st.markdown("""- DETRAN - ES """)
     
     if st.button('Scrap', type="primary"):
-        with st.echo():
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
