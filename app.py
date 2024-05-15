@@ -402,7 +402,7 @@ if servico_sel == "Leitura de PDF":
         def get_driver():
             return webdriver.Chrome(
                 service=Service(
-                    ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+                   driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
                 ),
                 options=options,
             )
