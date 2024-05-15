@@ -392,40 +392,25 @@ if servico_sel == "Leitura de PDF":
     st.markdown("""- DETRAN - ES """)
     
     if st.button('Scrap', type="primary"):
+        import streamlit as st
+
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
         from webdriver_manager.chrome import ChromeDriverManager
-        import stat
 
-        def setup_chromedriver():
-            url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
-            response = requests.get(url)
-            open('chromedriver.zip', 'wb').write(response.content)
-
-            with zipfile.ZipFile('chromedriver.zip', 'r') as zip_ref:
-                zip_ref.extractall()
-
-            os.chmod('chromedriver', stat.S_IEXEC)
-
-            return './chromedriver'
-
+        @st.experimental_singleton
         def get_driver():
-            options = Options()
-            options.add_argument('--headless')
-            options.add_argument('--disable-gpu')
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
+            return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
+        options = Options()
+        options.add_argument('--disable-gpu')
+        options.add_argument('--headless')
 
-            path = setup_chromedriver() 
-            driver = webdriver.Chrome(executable_path=path, options=options)
-            return driver
+        driver = get_driver()
+        driver.get('http://example.com')
 
-        driver = get_driver() 
-        driver.get("http://example.com")
-        print(driver.page_source)
-        driver.quit()
+        st.code(driver.page_source)
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
