@@ -396,7 +396,14 @@ if servico_sel == "Leitura de PDF":
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
         from webdriver_manager.chrome import ChromeDriverManager
+        import os
+        import sys
+        from contextlib import redirect_stderr
 
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.chrome.service import Service
+        from webdriver_manager.chrome import ChromeDriverManager
         def get_driver():
             
             options = Options()
@@ -404,8 +411,8 @@ if servico_sel == "Leitura de PDF":
             options.add_argument('--disable-gpu')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
-
-            service = Service(ChromeDriverManager(version='103.0.5060.53').install())
+            with open(os.devnull, 'w') as f, redirect_stderr(f):
+                service = Service(ChromeDriverManager(version='103.0.5060.53').install())
             driver = webdriver.Chrome(service=service, options=options)
             return driver
 
