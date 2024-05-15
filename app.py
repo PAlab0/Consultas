@@ -1,16 +1,19 @@
 import streamlit as st
+from selenium import webdriver
 import re
 import pandas as pd
 import pdfplumber
 import requests
 import time
+import zipfile
 import os
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 import warnings
 import platform
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-
+from webdriver_manager.chrome import ChromeDriverManager
+import zipfile
 warnings.filterwarnings('ignore')
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
@@ -57,7 +60,7 @@ def setup_driver():
     options.add_argument('--disable-infobars')
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-popup-blocking")
-    #options.add_argument('--headless')
+    options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1920,1080')
