@@ -406,7 +406,7 @@ if servico_sel == "Leitura de PDF":
             driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)
             return driver
 
-        driver = get_driver()
+        driver = get_driver() 
         driver.get("http://example.com")
         print(driver.page_source)
         driver.quit()
