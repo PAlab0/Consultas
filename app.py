@@ -403,7 +403,7 @@ if servico_sel == "Leitura de PDF":
             options.add_argument('--disable-gpu')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
-            driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)
+            driver = webdriver.Chrome(executable_path='PAlab0/Consultas/.github/workflows/main.yml', options=options)
             return driver
 
         driver = get_driver() 
