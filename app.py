@@ -163,17 +163,8 @@ def detran_MS_placas(uploaded_file):
     download(df)
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
-    # Configurar o ChromeDriver
     options = Options()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-infobars')
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-popup-blocking")
-    # options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--window-size=1920,1080')
-    options.add_argument('--ignore-certificate-errors')
+    options.add_argument("--disable-gpu")  # Desabilitar a aceleração de hardware, útil no modo headless
 
     # Configura o ChromeDriver automaticamente
     driver = webdriver.Chrome(options=options)
