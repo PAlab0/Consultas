@@ -397,6 +397,8 @@ if servico_sel == "Leitura de PDF":
         from selenium.webdriver.chrome.service import Service
         from webdriver_manager.chrome import ChromeDriverManager
         from webdriver_manager.core.os_manager import ChromeType
+        from webdriver_manager.chrome import ChromeDriverManager
+        from webdriver_manager.core.os_manager import ChromeType
 
         
         def get_driver():
@@ -413,7 +415,8 @@ if servico_sel == "Leitura de PDF":
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
 
-        driver = get_driver()
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=options)
         driver.get("http://example.com")
 
         st.code(driver.page_source)
