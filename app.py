@@ -397,7 +397,7 @@ if servico_sel == "Leitura de PDF":
         from selenium.webdriver.chrome.service import Service
         from webdriver_manager.chrome import ChromeDriverManager
         import stat
-
+'''
         def setup_chromedriver():
             url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
             response = requests.get(url)
@@ -409,7 +409,7 @@ if servico_sel == "Leitura de PDF":
             os.chmod('chromedriver', stat.S_IEXEC)
 
             return './chromedriver'
-
+'''
         def get_driver():
             options = Options()
             options.add_argument('--headless')
