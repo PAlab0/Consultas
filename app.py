@@ -414,19 +414,24 @@ if servico_sel == "Leitura de PDF":
         import os, sys
         from selenium import webdriver
         from selenium.webdriver import FirefoxOptions
+        from selenium import webdriver
+        from selenium.webdriver.firefox.service import Service as FirefoxService
+        from webdriver_manager.firefox import GeckoDriverManager
+        from selenium.webdriver.firefox.options import Options as FirefoxOptions
+        import streamlit as st
 
 
-        def installff():
-            os.system('sbase install geckodriver')
-            os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+        def get_firefox_browser():
+            opts = FirefoxOptions()
+            opts.add_argument("--headless")
+            service = FirefoxService(executable_path=GeckoDriverManager().install())
+            browser = webdriver.Firefox(service=service, options=opts)
+            return browser
 
-        _ = installff()
-        opts = FirefoxOptions()
-        opts.add_argument("--headless")
-        browser = webdriver.Firefox(options=opts)
-
+        browser = get_firefox_browser()
         browser.get('http://example.com')
         st.write(browser.page_source)
+        browser.quit()
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
