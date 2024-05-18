@@ -392,13 +392,9 @@ if servico_sel == "Leitura de PDF":
     st.markdown("""- DETRAN - ES """)
     
     if st.button('Scrap', type="primary"):
-        from selenium import webdriver
-        from selenium.webdriver.chrome.options import Options
-        from selenium.webdriver.chrome.service import Service
-        from webdriver_manager.chrome import ChromeDriverManager
-        import stat
-'''
-        def setup_chromedriver():
+        
+
+        '''def setup_chromedriver():
             url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
             response = requests.get(url)
             open('chromedriver.zip', 'wb').write(response.content)
@@ -408,23 +404,29 @@ if servico_sel == "Leitura de PDF":
 
             os.chmod('chromedriver', stat.S_IEXEC)
 
-            return './chromedriver'
-'''
-        def get_driver():
-            options = Options()
-            options.add_argument('--headless')
-            options.add_argument('--disable-gpu')
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
-            # Caminho para o ChromeDriver
-            path_to_chromedriver = '/usr/local/bin/chromedriver'  # Assegure-se que este caminho está correto
-            service = Service(executable_path=path_to_chromedriver)  # Usar Service para configurar o caminho
+            return './chromedriver'''
 
-            # Instanciar o WebDriver com o Service e Options configurados
-            driver = webdriver.Chrome(service=service, options=options)
-            return driver
 
-        driver = get_driver() 
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.chrome.service import Service
+        from webdriver_manager.chrome import ChromeDriverManager
+        import stat
+        
+        options = Options()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        # Caminho para o ChromeDriver
+        path_to_chromedriver = '/usr/local/bin/chromedriver'  # Assegure-se que este caminho está correto
+        service = Service(executable_path=path_to_chromedriver)  # Usar Service para configurar o caminho
+
+        # Instanciar o WebDriver com o Service e Options configurados
+        driver = webdriver.Chrome(service=service, options=options)
+            
+
+        driver = driver
         driver.get("http://example.com")
         print(driver.page_source)
         driver.quit()
