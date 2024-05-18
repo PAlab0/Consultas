@@ -416,10 +416,12 @@ if servico_sel == "Leitura de PDF":
             options.add_argument('--disable-gpu')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
+            # Caminho para o ChromeDriver
+            path_to_chromedriver = '/usr/local/bin/chromedriver'  # Assegure-se que este caminho está correto
+            service = Service(executable_path=path_to_chromedriver)  # Usar Service para configurar o caminho
 
-
-            path = setup_chromedriver() 
-            driver = webdriver.Chrome(executable_path=path, options=options)
+            # Instanciar o WebDriver com o Service e Options configurados
+            driver = webdriver.Chrome(service=service, options=options)
             return driver
 
         driver = get_driver() 
