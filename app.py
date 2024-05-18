@@ -393,17 +393,16 @@ if servico_sel == "Leitura de PDF":
     
     if st.button('Scrap', type="primary"):
 
+
         '''def setup_chromedriver():
             url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
             response = requests.get(url)
             open('chromedriver.zip', 'wb').write(response.content)
-
             with zipfile.ZipFile('chromedriver.zip', 'r') as zip_ref:
                 zip_ref.extractall()
-
             os.chmod('chromedriver', stat.S_IEXEC)
-
             return './chromedriver'''
+
 
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
@@ -412,26 +411,18 @@ if servico_sel == "Leitura de PDF":
         import stat
         import streamlit as st
         import os, sys
+
+        def installff():
+            os.system('sbase install geckodriver')
+            os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+        _ = installff()
         from selenium import webdriver
         from selenium.webdriver import FirefoxOptions
-        from selenium import webdriver
-        from selenium.webdriver.firefox.service import Service as FirefoxService
-        from webdriver_manager.firefox import GeckoDriverManager
-        from selenium.webdriver.firefox.options import Options as FirefoxOptions
-        import streamlit as st
-
-
-        def get_firefox_browser():
-            opts = FirefoxOptions()
-            opts.add_argument("--headless")
-            service = FirefoxService(executable_path=GeckoDriverManager().install())
-            browser = webdriver.Firefox(service=service, options=opts)
-            return browser
-
-        browser = get_firefox_browser()
+        opts = FirefoxOptions()
+        opts.add_argument("--headless")
+        browser = webdriver.Firefox(options=opts)
         browser.get('http://example.com')
         st.write(browser.page_source)
-        browser.quit()
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
