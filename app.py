@@ -342,17 +342,23 @@ if servico_sel == "Leitura de PDF":
     if st.button('Scrap', type="primary"):
         import streamlit as st
         import os, sys
+        from selenium import webdriver
+        from selenium.webdriver import FirefoxOptions
 
-        @st.experimental_singleton
         def installff():
             os.system('sbase install geckodriver')
             os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
 
         _ = installff()
-        from selenium import webdriver
-        from selenium.webdriver import FirefoxOptions
+
         opts = FirefoxOptions()
+
         opts.add_argument("--headless")
+        opts.add_argument('--headless')
+        opts.add_argument('--disable-gpu')
+        opts.add_argument('--no-sandbox')
+        opts.add_argument('--disable-dev-shm-usage')
+
         browser = webdriver.Firefox(options=opts)
 
         browser.get('http://example.com')
