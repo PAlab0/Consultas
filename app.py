@@ -5,7 +5,6 @@ import pandas as pd
 import pdfplumber
 import requests
 import time
-import zipfile
 import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,7 +12,6 @@ import warnings
 import platform
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-import zipfile
 warnings.filterwarnings('ignore')
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
