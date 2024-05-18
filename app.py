@@ -412,25 +412,22 @@ if servico_sel == "Leitura de PDF":
         from selenium.webdriver.chrome.service import Service
         from webdriver_manager.chrome import ChromeDriverManager
         import stat
+        import streamlit as st
+        import os, sys
         
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        # Caminho para o ChromeDriver
-        path_to_chromedriver = '/usr/local/bin/chromedriver'  # Assegure-se que este caminho está correto
-        service = Service(executable_path=path_to_chromedriver)  # Usar Service para configurar o caminho
+        def installff():
+            os.system('sbase install geckodriver')
+            os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
 
-        # Instanciar o WebDriver com o Service e Options configurados
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        '''driver = webdriver.Chrome(service=service, options=options)'''
-            
+        _ = installff()
+        from selenium import webdriver
+        from selenium.webdriver import FirefoxOptions
+        opts = FirefoxOptions()
+        opts.add_argument("--headless")
+        browser = webdriver.Firefox(options=opts)
 
-        driver = driver
-        driver.get("http://example.com")
-        print(driver.page_source)
-        driver.quit()
+        browser.get('http://example.com')
+        st.write(browser.page_source)
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
