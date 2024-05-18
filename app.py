@@ -340,23 +340,23 @@ if servico_sel == "Leitura de PDF":
     st.markdown("""- DETRAN - ES """)
     
     if st.button('Scrap', type="primary"):
-        from selenium import webdriver
-        from selenium.webdriver.firefox.options import Options as FirefoxOptions
-        from selenium.webdriver.firefox.service import Service as FirefoxService
-        from webdriver_manager.firefox import GeckoDriverManager
         import streamlit as st
+        import os, sys
 
-        def get_firefox_browser():
-            opts = FirefoxOptions()
-            opts.add_argument("--headless")  # Executa o Firefox sem interface gráfica
-            service = FirefoxService(executable_path=GeckoDriverManager().install())
-            browser = webdriver.Firefox(service=service, options=opts)
-            return browser
+        @st.experimental_singleton
+        def installff():
+            os.system('sbase install geckodriver')
+            os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
 
-        browser = get_firefox_browser()
+        _ = installff()
+        from selenium import webdriver
+        from selenium.webdriver import FirefoxOptions
+        opts = FirefoxOptions()
+        opts.add_argument("--headless")
+        browser = webdriver.Firefox(options=opts)
+
         browser.get('http://example.com')
         st.write(browser.page_source)
-        browser.quit()
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {

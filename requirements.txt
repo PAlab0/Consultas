@@ -7,4 +7,3 @@ openpyxl==3.0.9
 selenium
 webdriver-manager
 seleniumbase
-seleniumbase
