@@ -392,8 +392,18 @@ if servico_sel == "Leitura de PDF":
     st.markdown("""- DETRAN - ES """)
     
     if st.button('Scrap', type="primary"):
-        
 
+        '''def setup_chromedriver():
+            url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
+            response = requests.get(url)
+            open('chromedriver.zip', 'wb').write(response.content)
+
+            with zipfile.ZipFile('chromedriver.zip', 'r') as zip_ref:
+                zip_ref.extractall()
+
+            os.chmod('chromedriver', stat.S_IEXEC)
+
+            return './chromedriver'''
 
 
         from selenium import webdriver
