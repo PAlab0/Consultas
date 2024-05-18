@@ -399,7 +399,7 @@ if servico_sel == "Leitura de PDF":
 
     # Botão unificado de processamento
     if uploaded_file_red != None or uploaded_file != None:
-        if st.sidebar.button('Processar Arquivo'):
+        if st.sidebar.button('Processar Arquivo', type="primary"):
             if tipo_pdf_sel == "Nomes Faltantes":
                 # Passando ambos os arquivos CSV para a função de processamento
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file_comp, uploaded_file_red)
