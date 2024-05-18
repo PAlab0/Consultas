@@ -19,58 +19,6 @@ warnings.filterwarnings('ignore')
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
 
-def download_chromedriver():
-    url = "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json"
-    response = requests.get(url)
-    data = response.json()
-
-    # Imprimir a estrutura da resposta para verificação
-    print(data)
-
-    os_name = platform.system().lower()
-    if os_name == 'windows':
-        os_name += '32' if platform.architecture()[0] == '32bit' else '64'
-    elif os_name == 'darwin':
-        os_name = 'mac-arm64' if platform.processor() == 'arm' else 'mac-x64'
-    else:
-        os_name += '64'
-
-    try:
-        latest_stable = data['stable']['downloads']['chromedriver'][os_name]
-    except KeyError as e:
-        print(f"Erro ao acessar dados para {os_name}: {e}")
-        return None  # Ou tratamento de erro adequado
-
-    r = requests.get(latest_stable)
-    zip_path = "chromedriver.zip"
-    with open(zip_path, 'wb') as file:
-        file.write(r.content)
-
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        zip_ref.extractall()
-
-    os.remove(zip_path)
-    chromedriver_path = './chromedriver'  # Ajuste este caminho conforme necessário
-    return chromedriver_path
-
-# Configurar o ChromeDriver
-def setup_driver():
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-infobars')
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-popup-blocking")
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--window-size=1920,1080')
-    options.add_argument('--ignore-certificate-errors')
-
-    # Configura o ChromeDriver automaticamente
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-    return driver
-
-
 
 st.set_page_config(
     page_title="PA - Consultas",
@@ -393,16 +341,6 @@ if servico_sel == "Leitura de PDF":
     
     if st.button('Scrap', type="primary"):
 
-
-        '''def setup_chromedriver():
-            url = 'https://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip'
-            response = requests.get(url)
-            open('chromedriver.zip', 'wb').write(response.content)
-            with zipfile.ZipFile('chromedriver.zip', 'r') as zip_ref:
-                zip_ref.extractall()
-            os.chmod('chromedriver', stat.S_IEXEC)
-            return './chromedriver'''
-
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
         from selenium.webdriver.chrome.service import Service
@@ -414,7 +352,7 @@ if servico_sel == "Leitura de PDF":
         def installff():
             os.system('sbase install geckodriver')
             os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
-            
+
         _ = installff()
         from selenium import webdriver
         from selenium.webdriver import FirefoxOptions
