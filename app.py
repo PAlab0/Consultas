@@ -392,6 +392,16 @@ if servico_sel == "Leitura de PDF":
     st.markdown("""- DETRAN - ES """)
     
     if st.button('Scrap', type="primary"):
+        
+
+
+
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.chrome.service import Service
+        from webdriver_manager.chrome import ChromeDriverManager
+        import stat
+        import streamlit as st
         import os, sys
         
         def installff():
