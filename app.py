@@ -423,7 +423,8 @@ if servico_sel == "Leitura de PDF":
         service = Service(executable_path=path_to_chromedriver)  # Usar Service para configurar o caminho
 
         # Instanciar o WebDriver com o Service e Options configurados
-        driver = webdriver.Chrome(service=service, options=options)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        '''driver = webdriver.Chrome(service=service, options=options)'''
             
 
         driver = driver
