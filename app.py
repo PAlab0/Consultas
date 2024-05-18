@@ -167,8 +167,6 @@ def detran_ES_processos(uploaded_file):
         os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
     _ = installff()
     opts = FirefoxOptions()
-    opts.add_argument("--headless")
-    opts.add_argument('--headless')
     opts.add_argument('--disable-gpu')
     opts.add_argument('--no-sandbox')
     opts.add_argument('--disable-dev-shm-usage')
