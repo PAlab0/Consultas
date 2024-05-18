@@ -5,18 +5,15 @@ import pandas as pd
 import pdfplumber
 import requests
 import time
-import os
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 import warnings
 import platform
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+import os, sys
+from selenium.webdriver import FirefoxOptions
 warnings.filterwarnings('ignore')
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
-
 
 st.set_page_config(
     page_title="PA - Consultas",
@@ -165,9 +162,18 @@ def detran_MS_placas(uploaded_file):
     download(df)
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
-    # Configurar e inicializar o ChromeDriver
-    drive_dow = download_chromedriver()
-    driver = setup_driver()
+    def installff():
+        os.system('sbase install geckodriver')
+        os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+    _ = installff()
+    opts = FirefoxOptions()
+    opts.add_argument("--headless")
+    opts.add_argument('--headless')
+    opts.add_argument('--disable-gpu')
+    opts.add_argument('--no-sandbox')
+    opts.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Firefox(options=opts)
+
     def extrair_nome(texto):
         palavras = texto.split()
         if "Sr.(a)" in palavras:
@@ -336,31 +342,6 @@ servico_sel = st.sidebar.selectbox("Serviço", servicos)
 if servico_sel == "Leitura de PDF":
     st.title("Manutenção nos itens:")
     st.markdown("""- DETRAN - ES """)
-    
-    if st.button('Scrap', type="primary"):
-        import streamlit as st
-        import os, sys
-        from selenium import webdriver
-        from selenium.webdriver import FirefoxOptions
-
-        def installff():
-            os.system('sbase install geckodriver')
-            os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
-
-        _ = installff()
-
-        opts = FirefoxOptions()
-
-        opts.add_argument("--headless")
-        opts.add_argument('--headless')
-        opts.add_argument('--disable-gpu')
-        opts.add_argument('--no-sandbox')
-        opts.add_argument('--disable-dev-shm-usage')
-
-        browser = webdriver.Firefox(options=opts)
-
-        browser.get('http://example.com')
-        st.write(browser.page_source)
 
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
