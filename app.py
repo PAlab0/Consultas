@@ -162,7 +162,7 @@ def detran_MS_placas(uploaded_file):
     download(df)
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
-    def installff():
+    '''def installff():
         # Instala o geckodriver usando seleniumbase
         os.system('sbase install geckodriver')
         
@@ -193,10 +193,23 @@ def detran_ES_processos(uploaded_file):
     opts = FirefoxOptions()
     opts.add_argument('--disable-gpu')
     opts.add_argument('--no-sandbox')
-    opts.add_argument('--disable-dev-shm-usage')
+    opts.add_argument('--disable-dev-shm-usage')'''
+
+    def setup_driver():
+        # Configura as opções do Firefox
+        opts = webdriver.FirefoxOptions()
+        opts.add_argument('--disable-gpu')
+        opts.add_argument('--no-sandbox')
+        opts.add_argument('--disable-dev-shm-usage')
+
+        # Inicializa o WebDriver com o gerenciador que cuida do download do geckodriver
+        driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
+        return driver
+
+    driver = setup_driver()
 
     # Inicializa o WebDriver
-    driver = Firefox(options=opts)
+    '''driver = Firefox(options=opts)'''
 
     def extrair_nome(texto):
         palavras = texto.split()
