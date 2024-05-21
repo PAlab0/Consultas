@@ -169,6 +169,10 @@ def detran_ES_processos(uploaded_file):
         
         # Verifica se o diretório bin existe, caso contrário, cria-o
         bin_path = '/home/appuser/venv/bin'
+
+        if os.path.exists(destination) or os.path.islink(destination):
+            os.remove(destination)
+
         if not os.path.exists(bin_path):
             os.makedirs(bin_path)
         
@@ -177,8 +181,7 @@ def detran_ES_processos(uploaded_file):
         destination = '/home/appuser/venv/bin/geckodriver'
         
         # Remove o link simbólico existente, se houver
-        if os.path.exists(destination) or os.path.islink(destination):
-            os.remove(destination)
+        
         
         # Cria o link simbólico
         os.symlink(source, destination)
