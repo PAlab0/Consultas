@@ -10,6 +10,7 @@ import warnings
 import platform
 import os, sys
 from selenium.webdriver import FirefoxOptions
+from webdriver_manager.firefox import GeckoDriverManager
 warnings.filterwarnings('ignore')
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
