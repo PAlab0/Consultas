@@ -175,9 +175,11 @@ def detran_ES_processos(uploaded_file):
         source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
         destination = '/home/appuser/venv/bin/geckodriver'
         
-        # Cria o link simbólico
-        if os.path.exists(destination):
+        # Remove o link simbólico existente, se houver
+        if os.path.exists(destination) or os.path.islink(destination):
             os.remove(destination)
+        
+        # Cria o link simbólico
         os.symlink(source, destination)
         
         # Altera as permissões para garantir que o geckodriver possa ser executado
