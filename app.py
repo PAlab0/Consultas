@@ -163,14 +163,38 @@ def detran_MS_placas(uploaded_file):
 # DETRAN - ES
 def detran_ES_processos(uploaded_file):
     def installff():
+        # Instala o geckodriver usando seleniumbase
         os.system('sbase install geckodriver')
-        os.system('ln -s /home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver /home/appuser/venv/bin/geckodriver')
+        
+        # Verifica se o diretório bin existe, caso contrário, cria-o
+        bin_path = '/home/appuser/venv/bin'
+        if not os.path.exists(bin_path):
+            os.makedirs(bin_path)
+        
+        # Define os caminhos de origem e destino para o link simbólico
+        source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
+        destination = '/home/appuser/venv/bin/geckodriver'
+        
+        # Cria o link simbólico
+        if os.path.exists(destination):
+            os.remove(destination)
+        os.symlink(source, destination)
+        
+        # Altera as permissões para garantir que o geckodriver possa ser executado
+        os.chmod(source, 0o755)
+        
     _ = installff()
+
+    from selenium.webdriver import Firefox, FirefoxOptions
+
+    # Configura as opções do Firefox
     opts = FirefoxOptions()
     opts.add_argument('--disable-gpu')
     opts.add_argument('--no-sandbox')
     opts.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Firefox(options=opts)
+
+    # Inicializa o WebDriver
+    driver = Firefox(options=opts)
 
     def extrair_nome(texto):
         palavras = texto.split()
