@@ -5,6 +5,7 @@ import pdfplumber
 import requests
 import time
 import requests
+import webbrowser
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
@@ -154,102 +155,6 @@ def detran_MS_placas(uploaded_file):
     df3.drop(columns=["Número Auto", "Código da Infração"], inplace=True)
     df3 = df3.drop_duplicates(subset=['Placa'])
     download(df)
-# DETRAN - ES
-def detran_ES_processos(uploaded_file):
-    source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
-    destination = '/home/appuser/venv/bin/geckodriver'
-    def installff():
-        # Instala o geckodriver usando seleniumbase
-        os.system('sbase install geckodriver')
-        
-        # Verifica se o diretório bin existe, caso contrário, cria-o
-        bin_path = '/home/appuser/venv/bin'
-        if not os.path.exists(bin_path):
-            os.makedirs(bin_path)
-        
-        # Define os caminhos de origem e destino para o link simbólico
-        source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
-        destination = '/home/appuser/venv/bin/geckodriver'
-        
-        # Verifica se o geckodriver foi instalado corretamente
-        if not os.path.exists(source):
-            raise FileNotFoundError(f"geckodriver not found at {source}")
-        
-        # Remove o link simbólico existente, se houver
-        if os.path.exists(destination) or os.path.islink(destination):
-            os.remove(destination)
-        
-        # Cria o link simbólico
-        os.symlink(source, destination)
-        
-        # Altera as permissões para garantir que o geckodriver possa ser executado
-        os.chmod(source, 0o755)
-
-    _ = installff()
-        
-
-    # Configura as opções do Firefox
-    opts = FirefoxOptions()
-    opts.add_argument('--disable-gpu')
-    opts.add_argument('--no-sandbox')
-    opts.add_argument('--disable-dev-shm-usage')
-
-    # Inicializa o WebDriver
-    driver = Firefox(options=opts)
-
-    def extrair_nome(texto):
-        palavras = texto.split()
-        if "Sr.(a)" in palavras:
-            indice_sr = palavras.index("Sr.(a)")
-            if "CPF:" in palavras:
-                indice_cpf = palavras.index("CPF:")
-                nome = " ".join(palavras[indice_sr + 1 : indice_cpf])
-                return nome
-        return
-    
-    # Inicialize a lista para armazenar os valores capturados
-    valores_capturados = []
-    
-    # Defina o padrão da linha da tabela
-    padrao_linha_tabela = r"\d{4}-[A-Z0-9]{5}"
-    
-    # Extrai todas as tabelas do arquivo
-    todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
-    
-    # Cria um DataFrame com as tabelas extraídas
-    df = pd.DataFrame(todas_tabelas, columns=["Proc Adm"])
-    df2 = df.copy()
-    
-    # Loop através das linhas do DataFrame
-    for indice, linha in df2.iterrows():
-        # Abre o site
-        driver.get('https://processoeletronico.es.gov.br')
-
-        # Insere a consulta ou os dados relevantes
-        campo_pesquisa = driver.find_element(By.XPATH, '//*[@id="protocolo"]')
-        campo_pesquisa.send_keys(str(linha['Proc Adm']))
-
-        # Envie a consulta
-        botao_pesquisar = driver.find_element(By.XPATH,'//*[@id="btn-submit"]')
-        botao_pesquisar.click()
-        time.sleep(2.2)
-
-        # Capture o valor desejado
-        valor = driver.find_element(By.XPATH, "//*[@id='summary']").text
-
-        # Armazene o valor capturado na lista
-        valores_capturados.append(valor)
-        print(f"Processando linha  {indice + 1} - {str(linha['Proc Adm'])}")
-
-    # Feche o navegador
-    driver.quit()
-
-    # Adicione os valores capturados ao DataFrame
-    df2['Valor Capturado'] = valores_capturados
-    df2['Nome Completo'] = df2['Valor Capturado'].apply(extrair_nome)
-    df2['Nome Completo'] = df2['Nome Completo'].str.replace(',', '')
-    df2 = df2.drop('Valor Capturado', axis=1)
-    download(df2)
 # DETRAN - RS
 def detran_RS_placas(uploaded_file):
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s(\d{2}/\d{2}/\d{4})\s(\d+)\s([A-Z]{1,2}\d+)\s(\d+)"
@@ -363,9 +268,6 @@ def nomes_faltantes(uploaded_file_comp,uploaded_file_red):
 servico_sel = st.sidebar.selectbox("Serviço", servicos)
 
 if servico_sel == "Leitura de PDF":
-    st.title("Manutenção nos itens:")
-    st.markdown("""- DETRAN - ES """)
-
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
         "DETRAN - ES": {
@@ -418,8 +320,10 @@ if servico_sel == "Leitura de PDF":
     if tipo_pdf_sel == "Nomes Faltantes":
         uploaded_file_comp = st.sidebar.file_uploader(f"Escolha o seu csv - Completo", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
         uploaded_file_red = st.sidebar.file_uploader(f"Escolha o seu csv - Reduzido", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
-
-    elif tipo_pdf_sel != "Nomes Faltantes":
+    elif tipo_pdf_sel == "DETRAN - ES":
+        if st.button('Abrir Colab', type="primary"):
+            webbrowser.open_new_tab("https://colab.research.google.com/drive/1dW1ITnB7DZyTyxbNFs_Kt-tVDhPZHho6#scrollTo=_h1SCm_NmTA0")
+    else:
         uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
     # Botão unificado de processamento
