@@ -318,7 +318,6 @@ if servico_sel == "Leitura de PDF":
         uploaded_file_comp = st.sidebar.file_uploader(f"Escolha o seu csv - Completo", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
         uploaded_file_red = st.sidebar.file_uploader(f"Escolha o seu csv - Reduzido", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
     elif tipo_pdf_sel == "DETRAN - ES":
-        if st.button('Abrir Colab', type="primary"):
             link = "https://colab.research.google.com/drive/1dW1ITnB7DZyTyxbNFs_Kt-tVDhPZHho6#scrollTo=_h1SCm_NmTA0"
             st.markdown(f'''
                 <a href="{link}" target="_blank">
