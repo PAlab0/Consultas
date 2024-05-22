@@ -182,6 +182,10 @@ def detran_ES_processos(uploaded_file):
         source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
         destination = '/home/appuser/venv/bin/geckodriver'
         
+        # Verifica se o geckodriver foi instalado corretamente
+        if not os.path.exists(source):
+            raise FileNotFoundError(f"geckodriver not found at {source}")
+        
         # Remove o link simbólico existente, se houver
         if os.path.exists(destination) or os.path.islink(destination):
             os.remove(destination)
