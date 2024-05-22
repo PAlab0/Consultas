@@ -7,6 +7,8 @@ import requests
 import time
 from selenium.webdriver.common.by import By
 import warnings
+import requests
+import tarfile
 import platform
 import os, sys
 import subprocess
