@@ -9,6 +9,8 @@ from selenium.webdriver.common.by import By
 import warnings
 import platform
 import os, sys
+import subprocess
+from selenium.webdriver import Firefox
 from selenium.webdriver import FirefoxOptions
 from webdriver_manager.firefox import GeckoDriverManager
 warnings.filterwarnings('ignore')
