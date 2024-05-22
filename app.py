@@ -216,10 +216,39 @@ def detran_ES_processos(uploaded_file):
         # Altera as permissões para garantir que o geckodriver possa ser executado
         os.chmod(source, 0o755)
         print(f"geckodriver instalado em {source} e link simbólico criado em {destination}")
-        
-    installff()
 
-    from selenium.webdriver import Firefox, FirefoxOptions
+# Tenta instalar o geckodriver manualmente se sbase falhar
+    def manual_install_geckodriver():
+        url = "https://github.com/mozilla/geckodriver/releases/latest/download/geckodriver-v0.30.0-linux64.tar.gz"
+        dest_path = "/home/appuser/venv/bin/geckodriver.tar.gz"
+        extract_path = "/home/appuser/venv/bin/"
+        
+        # Baixa o geckodriver
+        try:
+            subprocess.run(["wget", url, "-O", dest_path], check=True)
+            print(f"Baixou geckodriver de {url} para {dest_path}")
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Falha ao baixar geckodriver: {e.stderr}")
+    
+    # Extrai o geckodriver
+    try:
+        subprocess.run(["tar", "-xzf", dest_path, "-C", extract_path], check=True)
+        print(f"Extraiu geckodriver para {extract_path}")
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Falha ao extrair geckodriver: {e.stderr}")
+    
+    # Define as permissões do geckodriver
+    geckodriver_path = os.path.join(extract_path, "geckodriver")
+    os.chmod(geckodriver_path, 0o755)
+    print(f"Permissões do geckodriver ajustadas: {geckodriver_path}")
+
+    try:
+        installff()
+    except RuntimeError as e:
+        print(f"Erro durante a instalação com sbase: {e}")
+        print("Tentando instalação manual do geckodriver...")
+        manual_install_geckodriver()
+        
 
     # Configura as opções do Firefox
     opts = FirefoxOptions()
