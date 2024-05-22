@@ -170,24 +170,8 @@ def detran_ES_processos(uploaded_file):
     source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
     destination = '/home/appuser/venv/bin/geckodriver'
     def installff():
-        # Verifica se o comando `sbase` está disponível
-        if subprocess.call("which sbase", shell=True) != 0:
-            raise RuntimeError("O comando 'sbase' não está disponível no ambiente.")
-        
-        # Tenta instalar o geckodriver usando seleniumbase e captura a saída
-        install_command = 'sbase install geckodriver'
-        try:
-            result = subprocess.run(install_command, shell=True, check=True, capture_output=True, text=True)
-            print(f"Resultado do comando '{install_command}': {result.stdout}")
-        except subprocess.CalledProcessError as e:
-            print(f"Erro ao executar '{install_command}': {e.stderr}")
-            raise RuntimeError(f"Falha ao executar o comando: {install_command}. Saída de erro: {e.stderr}")
-        
-        # Obtém o caminho do site-packages dinamicamente
-        site_packages_path = next((p for p in sys.path if 'site-packages' in p), None)
-        if not site_packages_path:
-            raise RuntimeError("Não foi possível encontrar o diretório site-packages")
-        print(f"Site-packages path: {site_packages_path}")
+        # Instala o geckodriver usando seleniumbase
+        os.system('sbase install geckodriver')
         
         # Verifica se o diretório bin existe, caso contrário, cria-o
         bin_path = '/home/appuser/venv/bin'
@@ -195,18 +179,8 @@ def detran_ES_processos(uploaded_file):
             os.makedirs(bin_path)
         
         # Define os caminhos de origem e destino para o link simbólico
-        source = os.path.join(site_packages_path, 'seleniumbase/drivers/geckodriver')
-        print(f"Source path: {source}")
-        destination = os.path.join(bin_path, 'geckodriver')
-        
-        # Verifica se o geckodriver foi realmente instalado
-        if not os.path.exists(source):
-            # Imprime a estrutura de diretórios para ajudar na depuração
-            for root, dirs, files in os.walk(site_packages_path):
-                print(root)
-                for file in files:
-                    print(f"  {file}")
-            raise FileNotFoundError(f"geckodriver não encontrado em {source}")
+        source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
+        destination = '/home/appuser/venv/bin/geckodriver'
         
         # Remove o link simbólico existente, se houver
         if os.path.exists(destination) or os.path.islink(destination):
@@ -217,41 +191,8 @@ def detran_ES_processos(uploaded_file):
         
         # Altera as permissões para garantir que o geckodriver possa ser executado
         os.chmod(source, 0o755)
-        print(f"geckodriver instalado em {source} e link simbólico criado em {destination}")
 
-# Tenta instalar o geckodriver manualmente se sbase falhar
-
-# Tenta instalar o geckodriver manualmente se sbase falhar
-    def manual_install_geckodriver():
-        url = "https://github.com/mozilla/geckodriver/releases/latest/download/geckodriver-v0.30.0-linux64.tar.gz"
-        dest_path = "/home/appuser/venv/bin/geckodriver.tar.gz"
-        extract_path = "/home/appuser/venv/bin/"
-        
-        # Baixa o geckodriver
-        try:
-            subprocess.run(["wget", url, "-O", dest_path], check=True)
-            print(f"Baixou geckodriver de {url} para {dest_path}")
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Falha ao baixar geckodriver: {e.stderr}")
-        
-        # Extrai o geckodriver
-        try:
-            subprocess.run(["tar", "-xzf", dest_path, "-C", extract_path], check=True)
-            print(f"Extraiu geckodriver para {extract_path}")
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Falha ao extrair geckodriver: {e.stderr}")
-        
-        # Define as permissões do geckodriver
-        geckodriver_path = os.path.join(extract_path, "geckodriver")
-        os.chmod(geckodriver_path, 0o755)
-        print(f"Permissões do geckodriver ajustadas: {geckodriver_path}")
-
-    try:
-        installff()
-    except RuntimeError as e:
-        print(f"Erro durante a instalação com sbase: {e}")
-        print("Tentando instalação manual do geckodriver...")
-        manual_install_geckodriver()
+    _ = installff()
         
 
     # Configura as opções do Firefox
