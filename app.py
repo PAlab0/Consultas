@@ -270,9 +270,7 @@ servico_sel = st.sidebar.selectbox("Serviço", servicos)
 if servico_sel == "Leitura de PDF":
     # Dicionário mapeando os tipos de PDF para as opções de processamento correspondentes
     opcoes_processamento = {
-        "DETRAN - ES": {
-            "Processos": detran_ES_processos
-        },
+        "DETRAN - ES": {},
         "DETRAN - MS": {
             "Placas": detran_MS_placas,
             "Processos": detran_MS_processos,
