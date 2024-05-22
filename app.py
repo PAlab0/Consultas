@@ -322,7 +322,7 @@ if servico_sel == "Leitura de PDF":
             st.markdown(f'''
                 <a href="{link}" target="_blank">
                     <button style="
-                        color: black; 
+                        color: white; 
                         background-color: #3540E6; 
                         border: none; 
                         padding: 10px 20px; 
