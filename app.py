@@ -166,11 +166,18 @@ def detran_ES_processos(uploaded_file):
     source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
     destination = '/home/appuser/venv/bin/geckodriver'
     def installff():
-        # Instala o geckodriver usando seleniumbase
+        # Verifica se o comando `sbase` está disponível
+        if subprocess.call("which sbase", shell=True) != 0:
+            raise RuntimeError("O comando 'sbase' não está disponível no ambiente.")
+        
+        # Tenta instalar o geckodriver usando seleniumbase e captura a saída
         install_command = 'sbase install geckodriver'
-        install_result = os.system(install_command)
-        if install_result != 0:
-            raise RuntimeError(f"Falha ao executar o comando: {install_command}")
+        try:
+            result = subprocess.run(install_command, shell=True, check=True, capture_output=True, text=True)
+            print(f"Resultado do comando '{install_command}': {result.stdout}")
+        except subprocess.CalledProcessError as e:
+            print(f"Erro ao executar '{install_command}': {e.stderr}")
+            raise RuntimeError(f"Falha ao executar o comando: {install_command}. Saída de erro: {e.stderr}")
         
         # Obtém o caminho do site-packages dinamicamente
         site_packages_path = next((p for p in sys.path if 'site-packages' in p), None)
