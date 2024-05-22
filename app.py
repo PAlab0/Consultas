@@ -169,14 +169,21 @@ def detran_ES_processos(uploaded_file):
         # Instala o geckodriver usando seleniumbase
         os.system('sbase install geckodriver')
         
+        # Obtém o caminho do site-packages dinamicamente
+        site_packages_path = next(p for p in sys.path if 'site-packages' in p)
+        
         # Verifica se o diretório bin existe, caso contrário, cria-o
         bin_path = '/home/appuser/venv/bin'
         if not os.path.exists(bin_path):
             os.makedirs(bin_path)
         
         # Define os caminhos de origem e destino para o link simbólico
-        source = '/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver'
-        destination = '/home/appuser/venv/bin/geckodriver'
+        source = os.path.join(site_packages_path, 'seleniumbase/drivers/geckodriver')
+        destination = os.path.join(bin_path, 'geckodriver')
+        
+        # Verifica se o geckodriver foi realmente instalado
+        if not os.path.exists(source):
+            raise FileNotFoundError(f"geckodriver não encontrado em {source}")
         
         # Remove o link simbólico existente, se houver
         if os.path.exists(destination) or os.path.islink(destination):
@@ -188,7 +195,7 @@ def detran_ES_processos(uploaded_file):
         # Altera as permissões para garantir que o geckodriver possa ser executado
         os.chmod(source, 0o755)
         
-    _ = installff()
+    installff()
 
     from selenium.webdriver import Firefox, FirefoxOptions
 
