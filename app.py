@@ -319,7 +319,25 @@ if servico_sel == "Leitura de PDF":
         uploaded_file_red = st.sidebar.file_uploader(f"Escolha o seu csv - Reduzido", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
     elif tipo_pdf_sel == "DETRAN - ES":
         if st.button('Abrir Colab', type="primary"):
-            st.markdown(f'<a href="https://colab.research.google.com/drive/1dW1ITnB7DZyTyxbNFs_Kt-tVDhPZHho6#scrollTo=_h1SCm_NmTA0" target="_blank"><button style="color: black; background-color: #FFD700; border: none; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">Visite o Google</button></a>', unsafe_allow_html=True)
+            link = "https://colab.research.google.com/drive/1dW1ITnB7DZyTyxbNFs_Kt-tVDhPZHho6#scrollTo=_h1SCm_NmTA0"
+            st.markdown(f'''
+                <a href="{link}" target="_blank">
+                    <button style="
+                        color: black; 
+                        background-color: #3540E6; 
+                        border: none; 
+                        padding: 10px 20px; 
+                        text-align: center; 
+                        display: inline-block; 
+                        font-size: 16px; 
+                        margin: 4px 2px; 
+                        cursor: pointer;
+                        border-radius: 20px;  /* Arredondamento dos cantos */
+                    ">
+                        Abrir Colab
+                    </button>
+                </a>
+                ''', unsafe_allow_html=True)
     else:
         uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
