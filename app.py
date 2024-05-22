@@ -167,10 +167,16 @@ def detran_ES_processos(uploaded_file):
     destination = '/home/appuser/venv/bin/geckodriver'
     def installff():
         # Instala o geckodriver usando seleniumbase
-        os.system('sbase install geckodriver')
+        install_command = 'sbase install geckodriver'
+        install_result = os.system(install_command)
+        if install_result != 0:
+            raise RuntimeError(f"Falha ao executar o comando: {install_command}")
         
         # Obtém o caminho do site-packages dinamicamente
-        site_packages_path = next(p for p in sys.path if 'site-packages' in p)
+        site_packages_path = next((p for p in sys.path if 'site-packages' in p), None)
+        if not site_packages_path:
+            raise RuntimeError("Não foi possível encontrar o diretório site-packages")
+        print(f"Site-packages path: {site_packages_path}")
         
         # Verifica se o diretório bin existe, caso contrário, cria-o
         bin_path = '/home/appuser/venv/bin'
@@ -179,10 +185,16 @@ def detran_ES_processos(uploaded_file):
         
         # Define os caminhos de origem e destino para o link simbólico
         source = os.path.join(site_packages_path, 'seleniumbase/drivers/geckodriver')
+        print(f"Source path: {source}")
         destination = os.path.join(bin_path, 'geckodriver')
         
         # Verifica se o geckodriver foi realmente instalado
         if not os.path.exists(source):
+            # Imprime a estrutura de diretórios para ajudar na depuração
+            for root, dirs, files in os.walk(site_packages_path):
+                print(root)
+                for file in files:
+                    print(f"  {file}")
             raise FileNotFoundError(f"geckodriver não encontrado em {source}")
         
         # Remove o link simbólico existente, se houver
@@ -194,6 +206,7 @@ def detran_ES_processos(uploaded_file):
         
         # Altera as permissões para garantir que o geckodriver possa ser executado
         os.chmod(source, 0o755)
+        print(f"geckodriver instalado em {source} e link simbólico criado em {destination}")
         
     installff()
 
