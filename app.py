@@ -102,8 +102,7 @@ def dnit_rs(uploaded_file):
     # Remove o UF da coluna "Placa/UF"
     df["Placa/UF"] = df["Placa/UF"].str.split("/", n=1).str[0]
     download(df)
-
- def dnit_todos(uploaded_file):
+def dnit_todos(uploaded_file):
     padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2}\s/\s[A-Z]{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{3}-\d)\s/\s(\d)"  
     # Chamando a função loop para processar o PDF e criar o DataFrame
     todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
