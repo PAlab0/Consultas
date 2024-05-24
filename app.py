@@ -109,7 +109,6 @@ def dnit_todos(uploaded_file):
     # Cria o DataFrame final com todas as informações extraídas de todas as páginas
     df = pd.DataFrame(todas_tabelas, columns=["Placa/UF", "Nº do Auto de Infração", "Data da Infração", "Código da Infração", "Desdobramento"])
     # Filtra as linhas que contêm "/RS" na coluna "Placa/UF"
-    df = df[df["Placa/UF"].str.contains(" / RS")]
     df = df[df["Código da Infração"] == "747-1"]
     df = df[df["Desdobramento"] == "0"]
     # Remove as colunas indesejadas do DataFrame
