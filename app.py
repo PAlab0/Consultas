@@ -298,7 +298,7 @@ if servico_sel == "Leitura de PDF":
         "DETRAN - SC": {
             "Placas": detran_SC_placas
         },
-        "DNIT: {
+        "DNIT - RS": {
             "Modelo de PDF DNIT - RS": dnit_rs,
             "Modelo de PDF DNIT - Todos": dnit_todos
         },
