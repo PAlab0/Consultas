@@ -102,6 +102,22 @@ def dnit_rs(uploaded_file):
     # Remove o UF da coluna "Placa/UF"
     df["Placa/UF"] = df["Placa/UF"].str.split("/", n=1).str[0]
     download(df)
+
+ def dnit_todos(uploaded_file):
+    padrao_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2}\s/\s[A-Z]{2})\s([A-Z]\d{9})\s(\d{2}/\d{2}/\d{4})\s(\d{3}-\d)\s/\s(\d)"  
+    # Chamando a função loop para processar o PDF e criar o DataFrame
+    todas_tabelas = loop(uploaded_file, padrao_linha_tabela)
+    # Cria o DataFrame final com todas as informações extraídas de todas as páginas
+    df = pd.DataFrame(todas_tabelas, columns=["Placa/UF", "Nº do Auto de Infração", "Data da Infração", "Código da Infração", "Desdobramento"])
+    # Filtra as linhas que contêm "/RS" na coluna "Placa/UF"
+    df = df[df["Placa/UF"].str.contains(" / RS")]
+    df = df[df["Código da Infração"] == "747-1"]
+    df = df[df["Desdobramento"] == "0"]
+    # Remove as colunas indesejadas do DataFrame
+    df.drop(columns=["Nº do Auto de Infração", "Data da Infração", "Código da Infração", "Desdobramento"], inplace=True)
+    # Remove o UF da coluna "Placa/UF"
+    df["Placa/UF"] = df["Placa/UF"].str.split("/", n=1).str[0]
+    download(df)   
 # DETRAN - MS
 def detran_MS_processos(uploaded_file):
     padrao_linha_tabela = r"Condutor:\s+(.*?)\n"
@@ -282,8 +298,9 @@ if servico_sel == "Leitura de PDF":
         "DETRAN - SC": {
             "Placas": detran_SC_placas
         },
-        "DNIT - RS": {
-            "Modelo de PDF DNIT - RS": dnit_rs
+        "DNIT: {
+            "Modelo de PDF DNIT - RS": dnit_rs,
+            "Modelo de PDF DNIT - Todos": dnit_todos
         },
         "PRF - Outros estados": {
             "Autuação - Bafômetro": PRF_outros_bafometro,
