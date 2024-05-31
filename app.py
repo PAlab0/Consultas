@@ -322,14 +322,12 @@ if servico_sel == "Leitura de PDF":
     opcoes_processamento_selecionado_nomes = list(opcoes_processamento_selecionado.keys())
     opcao_processamento_sel = st.sidebar.selectbox(f"Selecione uma opção {tipo_pdf_sel}", opcoes_processamento_selecionado_nomes)
     
-    # Lógica para selecionar o arquivo para processamento de PDF 
-    st.sidebar.title("Upload de arquivo 🗂️")
-
     uploaded_file_comp = None
     uploaded_file_red = None
     uploaded_file = None
 
     if tipo_pdf_sel == "Nomes Faltantes":
+        st.sidebar.title("Upload de arquivo 🗂️")
         uploaded_file_comp = st.sidebar.file_uploader(f"Escolha o seu csv - Completo", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
         uploaded_file_red = st.sidebar.file_uploader(f"Escolha o seu csv - Reduzido", accept_multiple_files=False, type=('csv'), help=("Coloque um arquivo .csv"))
     elif tipo_pdf_sel == "DETRAN - ES":
@@ -353,6 +351,7 @@ if servico_sel == "Leitura de PDF":
                 </a>
                 ''', unsafe_allow_html=True)
     else:
+        st.sidebar.title("Upload de arquivo 🗂️")
         uploaded_file = st.sidebar.file_uploader(f"Escolha o seu PDF - {tipo_pdf_sel}", accept_multiple_files=False, type=('pdf'), help=("Coloque um arquivo .pdf"))
 
     # Botão unificado de processamento
