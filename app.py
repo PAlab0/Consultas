@@ -364,16 +364,27 @@ if servico_sel == "Leitura de PDF":
                 # Passando o arquivo PDF para a função de processamento
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
-
 elif servico_sel == "Consulta de placas - GOV":
     # Obtendo a entrada do usuário para selecionar o tipo de consulta
     consulta_sel = st.sidebar.selectbox("Consulta", consulta)
-    
-    # Lógica para criar os inputs de acordo com a escolha do usuário
-    if consulta_sel == "Manual":
-        st.title("Manutençao - Consulta de placas - GOV:")
-    elif consulta_sel == "Automatizada":
-        st.sidebar.title("""Upload de arquivo 🗂️""")
-        uploaded_files = st.sidebar.file_uploader("Escolha o seu arquivo Excel", accept_multiple_files=True, type=('xlsx', 'xls'), help=("Coloque um arquivo .xlsx ou .xls"))
+    link = "https://colab.research.google.com/drive/1H8wCSJmwAf485EaE5xeJwuYWy4EqSQTW#scrollTo=4jfs5_C-0YA4"
+    st.markdown(f'''
+                <a href="{link}" target="_blank">
+                    <button style="
+                        color: white; 
+                        background-color: #3540E6; 
+                        border: none; 
+                        padding: 10px 20px; 
+                        text-align: center; 
+                        display: inline-block; 
+                        font-size: 16px; 
+                        margin: 4px 2px; 
+                        cursor: pointer;
+                        border-radius: 20px;  /* Arredondamento dos cantos */
+                    ">
+                        Abrir Colab
+                    </button>
+                </a>
+                ''', unsafe_allow_html=True)
 else:
     uploaded_files = None
