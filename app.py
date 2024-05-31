@@ -7,7 +7,6 @@ import time
 import requests
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
-consulta = ["Manual", "Automatizada"] # Lista de tipos de consulta
 
 st.set_page_config(
     page_title="PA - Consultas",
@@ -365,8 +364,6 @@ if servico_sel == "Leitura de PDF":
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
 elif servico_sel == "Consulta de placas - GOV":
-    # Obtendo a entrada do usuário para selecionar o tipo de consulta
-    consulta_sel = st.sidebar.selectbox("Consulta", consulta)
     link = "https://colab.research.google.com/drive/1H8wCSJmwAf485EaE5xeJwuYWy4EqSQTW#scrollTo=4jfs5_C-0YA4"
     st.markdown(f'''
                 <a href="{link}" target="_blank">
