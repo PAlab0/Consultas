@@ -524,16 +524,19 @@ elif servico_sel == "Consulta de placas - GOV":
         driver.quit()
         return df
 
+    
     # Exemplo de uso:
     st.sidebar.title("Upload de arquivo 🗂️")
     uploaded_file = st.sidebar.file_uploader(f"Escolha o seu arquivo", accept_multiple_files=False, type=('xlsx'), help=("Coloque um arquivo .xlsx"))
-    
+
     file_name = uploaded_file
     login = "00392496038"
     senha = "ContaDespachante1#"
     chave_api = "f897d99a63823b9a606f67d5a7529674"
 
     df = consultar_placas(file_name, login, senha, chave_api)
-    print(df)
+    
+    if st.button('Processar Arquivo', type="primary"):
+        print(df)
 else:
     uploaded_files = None
