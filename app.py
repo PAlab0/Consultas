@@ -365,24 +365,170 @@ if servico_sel == "Leitura de PDF":
                 opcoes_processamento[tipo_pdf_sel][opcao_processamento_sel](uploaded_file)
 
 elif servico_sel == "Consulta de placas - GOV":
-    link = "https://colab.research.google.com/drive/1H8wCSJmwAf485EaE5xeJwuYWy4EqSQTW#scrollTo=4jfs5_C-0YA4"
-    st.markdown(f'''
-                <a href="{link}" target="_blank">
-                    <button style="
-                        color: white; 
-                        background-color: #3540E6; 
-                        border: none; 
-                        padding: 10px 20px; 
-                        text-align: center; 
-                        display: inline-block; 
-                        font-size: 16px; 
-                        margin: 4px 2px; 
-                        cursor: pointer;
-                        border-radius: 20px;  /* Arredondamento dos cantos */
-                    ">
-                        Abrir Colab
-                    </button>
-                </a>
-                ''', unsafe_allow_html=True)
+    def consultar_placas(file_name, login, senha, chave_api):
+        driver = uc.Chrome()
+        relatorio = pd.read_excel(file_name, header=None)
+        relatorio.columns = ['placas']
+        
+        # Abra o site
+        link = 'https://www.soe.rs.gov.br/soeauth/connect/authorize?scope=openid&response_type=code&redirect_uri=https%3A%2F%2Fcorporativo.detran.rs.gov.br%2Fpcd%2Fopenid%2Fcallback%2Fsoe&state=7t9lvv08jlrtfvde642klg8mot&code_challenge_method=S256&prompt=login&nonce=i0ra1t35e2igffh2r8qoc58oag&client_id=pcd.i1.OcldRB5YWGUZWhcu4f91eUu&code_challenge=mGXSmL2dFVTJPdkOMcporQTHI29QTRn2homra-wsUSk'
+        driver.get(link)
+        time.sleep(3)
+
+        def click(id):
+            btn = driver.find_element(By.XPATH, f'//*[@id="{id}"]')
+            btn.click()
+
+        def clickv(value):
+            btn = driver.find_element(By.XPATH, f'//*[@value="{value}"]')
+            btn.click()
+
+        click("linkTabGovbr")
+        time.sleep(1)
+        click("btnLogonGovbr")
+        time.sleep(1)
+
+        campo_login = driver.find_element(By.XPATH, f'//*[@id="accountId"]')
+        campo_login.send_keys(login)
+        click("enter-account-id")
+        time.sleep(6)
+
+        campo_senha = driver.find_element(By.XPATH, f'//*[@id="password"]')
+        campo_senha.send_keys(senha)
+        click("submit-button")
+        time.sleep(2)
+
+        click("usuario")
+        time.sleep(1)
+        clickv("CRDD")
+        time.sleep(0.8)
+
+        click("ico_ajuda")
+        time.sleep(0.5)
+        click("entrar")
+        time.sleep(1.5)
+
+        click("logo")
+        time.sleep(0.8)
+
+        btn_detran = driver.find_element(By.XPATH, f'//*[@class="ui-button-text ui-c"]')
+        btn_detran.click()
+        time.sleep(0.8)
+
+        click("btnLogonGovbr")
+        time.sleep(0.8)
+
+        click("usuario")
+        time.sleep(0.8)
+        clickv("CRDD")
+        time.sleep(0.8)
+
+        click("ico_ajuda")
+        time.sleep(0.5)
+        click("entrar")
+        time.sleep(2)
+
+        btn_detran = driver.find_element(By.XPATH, f'//*[@class="ui-button-text ui-c"]')
+        btn_detran.click()
+        time.sleep(0.8)
+
+        click("j_idt51")
+        time.sleep(0.8)
+
+        click("formMenu:rm_despachante")
+        time.sleep(0.8)
+
+        click("formMenu:rm1_veiculo")
+        time.sleep(0.8)
+
+        dados_veiculos = []
+
+        # Itera sobre cada placa no relatório
+        for placa in relatorio["placas"]:
+            time.sleep(2)
+            try:
+                # Verifica se o CAPTCHA está presente
+                chave_captcha = "6Ld60VwjAAAAAH6RLKFhKysuTUtVm3bEkv9cPT4S"
+                link2 = driver.current_url
+
+                # Preenche o campo da placa 
+                campo_placa = driver.find_element(By.XPATH, '//*[@id="form:placa"]')
+                campo_placa.clear()
+                campo_placa.send_keys(placa)
+                time.sleep(1)
+
+                # Soluciona o CAPTCHA usando a API Anti-Captcha
+                solver = recaptchaV2Proxyless()
+                solver.set_verbose(0)
+                solver.set_key(chave_api)
+                solver.set_website_url(link2)
+                solver.set_website_key(chave_captcha)
+                resposta = solver.solve_and_return_solution()
+
+                if resposta != 0:
+                    print("CAPTCHA resolvido")
+                    driver.execute_script('var element=document.getElementById("g-recaptcha-response"); element.style.display="none";')
+                    time.sleep(0.5)
+                    driver.execute_script(f"document.getElementById('g-recaptcha-response').innerHTML = '{resposta}'")
+                    time.sleep(1)
+                else:
+                    print("Falha ao resolver o CAPTCHA")
+                    continue  # Pula para a próxima placa se o CAPTCHA não for resolvido
+
+                # Clica no botão de consulta
+                driver.find_element(By.ID, 'form:btnConsultar').click()
+                time.sleep(1)
+
+                # Verifica se os dados do veículo estão presentes
+                time.sleep(2)
+                v_placa = driver.find_element(By.XPATH, '//*[@id="form:panel-info-veiculo_header"]/span/div[1]/div[2]').text.split(': ')[1]
+                v_nome = driver.find_element(By.XPATH, '//*[@id="form:panel-info-veiculo_header"]/span/div[1]/div[1]').text.split(': ')[1]
+                v_ren = driver.find_element(By.XPATH, '//*[@id="form:panel-info-veiculo_header"]/span/div[1]/div[4]').text.split(': ')[1]
+                v_mun = driver.find_element(By.XPATH, '//*[@id="form:j_idt78_content"]/div[5]/div[1]').text.split(': ')[1]
+
+                # Armazena os dados do veículo em um dicionário
+                dados_veiculo = {
+                    "placa": v_placa,
+                    "nome": v_nome,
+                    "renavam": v_ren,
+                    "municipio": v_mun
+                }
+                dados_veiculos.append(dados_veiculo)
+
+                # Registra o status da placa encontrada
+                print(f"Placa: {placa} Encontrada")
+
+                # Clica no botão para voltar ao DETRAN
+                btn_detran = driver.find_element(By.XPATH, f'//*[@class="ui-button-text ui-c"]')
+                btn_detran.click()
+
+            except NoSuchElementException:
+                # Trata a exceção quando um elemento não é encontrado
+                print(f"Elemento não encontrado para a placa: {placa}")
+
+                # Clica no botão para voltar ao DETRAN
+                btn_detran = driver.find_element(By.XPATH, f'//*[@class="ui-button-text ui-c"]')
+                btn_detran.click()
+
+            except Exception as e:
+                print(f"Erro ao processar placa {placa}: {e}")
+
+        time.sleep(10)
+
+        df = pd.DataFrame(dados_veiculos)
+        driver.quit()
+        return df
+
+    # Exemplo de uso:
+    st.sidebar.title("Upload de arquivo 🗂️")
+    uploaded_file = st.sidebar.file_uploader(f"Escolha o seu arquivo", accept_multiple_files=False, type=('xlsx'), help=("Coloque um arquivo .xlsx"))
+    
+    file_name = uploaded_file
+    login = "00392496038"
+    senha = "ContaDespachante1#"
+    chave_api = "f897d99a63823b9a606f67d5a7529674"
+
+    df = consultar_placas(file_name, login, senha, chave_api)
+    print(df)
 else:
     uploaded_files = None
