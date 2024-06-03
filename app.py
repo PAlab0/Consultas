@@ -6,6 +6,11 @@ import pdfplumber
 import requests
 import time
 import requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+import undetected_chromedriver as uc
+from anticaptchaofficial.recaptchav2proxyless import recaptchaV2Proxyless
 
 servicos = ["Leitura de PDF", "Consulta de placas - GOV"] # Lista de serviços disponíveis
 
