@@ -123,10 +123,10 @@ def detran_MS_processos(uploaded_file):
     download(df)
 def detran_MS_defesa(uploaded_file):
     padrao_linha_tabela = r"Condutor:\s+(.*?)\n"
-    todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
-    todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
     padrao1_linha_tabela = r"Condutor:\s+(.*?)\n"
     padrao2_linha_tabela = r"Previsão Legal \(CTB\): (.+?)\n"
+    todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
+    todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
     df1 = pd.DataFrame(todas_tabelas1, columns=["Condutor"])
     df2 = pd.DataFrame(todas_tabelas2, columns=["Previsão Legal"])
     df = pd.concat([df1, df2], axis=1)
@@ -135,12 +135,12 @@ def detran_MS_defesa(uploaded_file):
     download(df)
 def detran_MS_recurso(uploaded_file):
     padrao_linha_tabela = r"Condutor:\s+(.*?)\n"
-    todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
-    todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
-    todas_tabelas3 = loop(uploaded_file, padrao3_linha_tabela)    
     padrao1_linha_tabela = r"Condutor:\s+(.*?)\n"
     padrao2_linha_tabela = r"Fundamento legal (.+?) Processo"
     padrao3_linha_tabela = r"Prazo:\s+(.*?)\n"
+    todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
+    todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
+    todas_tabelas3 = loop(uploaded_file, padrao3_linha_tabela)    
     df1 = pd.DataFrame(todas_tabelas1, columns=["Condutor"])
     df2 = pd.DataFrame(todas_tabelas2, columns=["Previsão Legal"])
     df3 = pd.DataFrame(todas_tabelas3, columns=["Prazo"])
@@ -154,10 +154,10 @@ def detran_MS_recurso(uploaded_file):
     df.drop(columns=["Prazo"], inplace=True)
     download(df)
 def detran_MS_placas(uploaded_file):
-    todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
-    todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
     padrao1_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z0-9]+)\s(\d+)"
     padrao2_linha_tabela = r"([A-Z]{3}\d{1}\w{1}\d{2})\s([A-Z0-9]+)\s(\d+)\s(\d{2}/\d{2}/\d{4})\s(\d{2}/\d{2}/\d{4})\s([\d,]+(?:\.\d{3})*,\d+)"
+    todas_tabelas1 = loop(uploaded_file, padrao1_linha_tabela)
+    todas_tabelas2 = loop(uploaded_file, padrao2_linha_tabela)
     df = pd.DataFrame(todas_tabelas1, columns=["Placa", "Número Auto", "Código da Infração"])
     df2 = pd.DataFrame(todas_tabelas2, columns=["Placa", "Número Auto", "Código da Infração","Data de Infração", "Data Limite", "Valor"])
     df2 = df2["Placa"]
