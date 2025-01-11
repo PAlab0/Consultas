@@ -284,7 +284,7 @@ if servico_sel == "Leitura de PDF":
     opcoes_processamento = {
         "DETRAN - ES": {},
         "DETRAN - MS": {
-            "Placas": detran_MS_placas,
+            /#"Placas": detran_MS_placas,
             "Processos": detran_MS_processos,
             "Defesa (sem 218)": detran_MS_defesa,
             "Recurso (sem 246)": detran_MS_recurso
@@ -292,20 +292,20 @@ if servico_sel == "Leitura de PDF":
         "DETRAN - RS": {
             "Placas": detran_RS_placas
         },
-        "DETRAN - SC": {
-            "Placas": detran_SC_placas
-        },
+        #"DETRAN - SC": {
+        # "Placas": detran_SC_placas
+        # },
         "DNIT": {
-            "Modelo de PDF DNIT - RS": dnit_rs,
+            # "Modelo de PDF DNIT - RS": dnit_rs,
             "Modelo de PDF DNIT - Todos": dnit_todos
         },
         "PRF - Outros estados": {
             "Autuação - Bafômetro": PRF_outros_bafometro,
-            "Autuação - Completo": PRF_outros_completo,
+            # "Autuação - Completo": PRF_outros_completo,
             "Autuação - Recusa": PRF_outros_recusa
         },
         "PRF - RS": {
-            "Penalidade": PRF_RS_penalidade,
+            # "Penalidade": PRF_RS_penalidade,
             "Autuação": PRF_RS_autuacao
         },
         "Nomes Faltantes": {
